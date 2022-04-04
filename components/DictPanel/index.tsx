@@ -1,5 +1,5 @@
-import EnglishDict from "./EnglishDict"
 import SearchBar from "./SearchBar"
+import SpanishDict from "./SpanishDict"
 
 const DictPanel = () => {
   return (
@@ -7,7 +7,7 @@ const DictPanel = () => {
       <div className="h-10">
         <SearchBar />
       </div>
-      <EnglishDict />
+      <SpanishDict />
     </div>
   )
 }

@@ -1,13 +1,29 @@
 import useSWR from "swr"
-import * as Collapsible from "@radix-ui/react-collapsible"
 import { PlayIcon } from "@heroicons/react/outline"
-import { Word } from "../../types"
+import { ChevronDownIcon } from "@heroicons/react/solid"
+import * as Collapsible from "@radix-ui/react-collapsible"
+import { Definition, Word } from "../../types"
 
 const fetcher = (url: string) =>
   fetch(url).then((res) => res.json() as Promise<{ data: Word }>)
 
-const Definitions = () => {
-
+const Definitions = ({ definitions }: { definitions: Definition[] }) => {
+  return (
+    <Collapsible.Root defaultOpen>
+      <Collapsible.Trigger className="group flex w-full select-none items-center justify-between rounded-md bg-gray-100 px-2 py-1.5 text-gray-600 shadow-sm mb-4">
+        <span className="font-bold">Definitions</span>
+        <ChevronDownIcon className="h-5 w-5 transform duration-300 ease-in-out group-radix-state-open:rotate-180" />
+      </Collapsible.Trigger>
+      <Collapsible.Content className="flex flex-col space-y-4">
+        {definitions.map((definition, index) => (
+          <div key={index}>
+            <span className="mr-2 font-display text-white px-1 py-0.5 bg-anki-blue rounded-sm">{definition.pos}</span>
+            <span className="text-gray-600">{definition.sense}</span>
+          </div>
+        ))}
+      </Collapsible.Content>
+    </Collapsible.Root>
+  )
 }
 
 const Content = ({ word }: { word: Word }) => {
@@ -22,8 +38,7 @@ const Content = ({ word }: { word: Word }) => {
           <PlayIcon className="h-6 w-6" />
         </span>
       </div>
-      <div>
-      </div>
+      <Definitions definitions={word.definitions} />
     </div>
   )
 }

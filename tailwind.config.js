@@ -10,7 +10,7 @@ module.exports = {
     extend: {
       colors: {
         levander: "#e6e9eb",
-        "anki-blue": "#1b95e0"
+        "anki-blue": "#03a9f4"
       },
       fontFamily: {
         sans: ["Inter", ...defaultTheme.fontFamily.sans],

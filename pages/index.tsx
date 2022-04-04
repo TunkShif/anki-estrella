@@ -5,12 +5,12 @@ import DictPanel from "../components/DictPanel"
 
 const Home: NextPage = () => {
   return (
-    <Layout>
-      <div className="grid grid-cols-2 gap-28">
-        <DictPanel />
-        <CardPanel />
-      </div>
-    </Layout>
+      <Layout>
+        <div className="grid grid-cols-2 gap-28">
+          <DictPanel />
+          <CardPanel />
+        </div>
+      </Layout>
   )
 }
 
