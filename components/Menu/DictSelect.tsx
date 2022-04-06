@@ -1,16 +1,17 @@
 import ChevronDownIcon from "@heroicons/react/solid/ChevronDownIcon"
 import * as Select from "@radix-ui/react-select"
-import { useState } from "react"
+import { useAtom } from "jotai"
+import { dictionaries, Dictionaries } from "../../lib/dictionary"
+import { dictAtom } from "../../store"
 
 const DictSelect = () => {
-  const dicts = [
-    { id: "en", name: "English" },
-    { id: "es", name: "Spanish" }
-  ]
-  const [selected, setSelected] = useState(dicts[0].id)
+  const [dict, setDict] = useAtom(dictAtom)
 
   return (
-    <Select.Root value={selected} onValueChange={(value) => setSelected(value)}>
+    <Select.Root
+      value={dict}
+      onValueChange={(value: Dictionaries) => setDict(value)}
+    >
       <Select.Trigger className="inline-flex items-center space-x-1 rounded-md py-1 px-2 font-display text-gray-600 outline-none hover:bg-gray-100">
         <Select.Value />
         <Select.Icon>
@@ -19,7 +20,7 @@ const DictSelect = () => {
       </Select.Trigger>
       <Select.Content className="overflow-hidden rounded-md bg-white p-2 shadow-md">
         <Select.Viewport className="space-y-1">
-          {dicts.map((dict) => (
+          {dictionaries.map((dict) => (
             <Select.Item
               value={dict.id}
               key={dict.id}

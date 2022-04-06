@@ -3,22 +3,32 @@ import { PlayIcon } from "@heroicons/react/outline"
 import { ChevronDownIcon } from "@heroicons/react/solid"
 import * as Collapsible from "@radix-ui/react-collapsible"
 import { Definition, Word } from "../../types"
-
-const fetcher = (url: string) =>
-  fetch(url).then((res) => res.json() as Promise<{ data: Word }>)
+import DraggableText from "./DraggableText"
+import { queryEnglishWord } from "../../lib/dictionary"
+import { useAtom } from "jotai"
+import { queryAtom } from "../../store"
 
 const Definitions = ({ definitions }: { definitions: Definition[] }) => {
   return (
     <Collapsible.Root defaultOpen>
-      <Collapsible.Trigger className="group flex w-full select-none items-center justify-between rounded-md bg-gray-100 px-2 py-1.5 text-gray-600 shadow-sm mb-4">
+      <Collapsible.Trigger className="group mb-4 flex w-full select-none items-center justify-between rounded-md bg-gray-100 px-2 py-1.5 text-gray-600 shadow-sm">
         <span className="font-bold">Definitions</span>
         <ChevronDownIcon className="h-5 w-5 transform duration-300 ease-in-out group-radix-state-open:rotate-180" />
       </Collapsible.Trigger>
-      <Collapsible.Content className="flex flex-col space-y-4">
+      <Collapsible.Content className="flex flex-col space-y-2">
         {definitions.map((definition, index) => (
-          <div key={index}>
-            <span className="mr-2 font-display text-white px-1 py-0.5 bg-anki-blue rounded-sm">{definition.pos}</span>
-            <span className="text-gray-600">{definition.sense}</span>
+          <div
+            key={index}
+            className="flex flex-col items-start justify-center space-y-2"
+          >
+            <DraggableText
+              text={definition.pos}
+              className="mr-2 inline-block rounded-sm bg-anki-blue px-1 py-0.5 font-display text-white hover:bg-opacity-80"
+            />
+            <DraggableText
+              text={definition.sense}
+              className="inline-block rounded-sm px-1 py-0.5 text-gray-800 hover:bg-gray-200"
+            />
           </div>
         ))}
       </Collapsible.Content>
@@ -29,12 +39,18 @@ const Definitions = ({ definitions }: { definitions: Definition[] }) => {
 const Content = ({ word }: { word: Word }) => {
   return (
     <div className="flex flex-col space-y-2">
-      <div className="flex items-center justify-between text-gray-600">
-        <div className="space-x-4">
-          <span className="text-xl font-bold">{word.word}</span>
-          <span className="">{word.phonetics}</span>
+      <div className="flex items-center justify-between">
+        <div className="space-x-2 text-gray-600">
+          <DraggableText
+            text={word.word}
+            className="inline-block rounded-md px-1 py-0.5 text-xl font-bold hover:bg-gray-200"
+          />
+          <DraggableText
+            text={word.phonetics || ""}
+            className="inline-block rounded-md px-1 py-0.5 hover:bg-gray-200"
+          />
         </div>
-        <span className="rounded-md p-1 hover:bg-gray-200">
+        <span className="rounded-md p-1 text-gray-600 hover:bg-gray-200">
           <PlayIcon className="h-6 w-6" />
         </span>
       </div>
@@ -44,10 +60,8 @@ const Content = ({ word }: { word: Word }) => {
 }
 
 const EnglishDict = () => {
-  const { data, error } = useSWR(
-    "https://dictlet-api.tunkshif.one/api/collins-en-cn/query/test",
-    fetcher
-  )
+  const [query, _setQuery] = useAtom(queryAtom)
+  const { data, error } = useSWR(query, queryEnglishWord)
 
   return (
     <div className="flex h-[640px] w-full flex-col space-y-4 overflow-y-auto rounded-md bg-white p-4 shadow-sm">

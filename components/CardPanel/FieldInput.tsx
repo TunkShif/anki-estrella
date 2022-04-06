@@ -52,7 +52,7 @@ const DropArea = ({ value, onDrop }: DropAreaProps) => {
   return (
     <div
       ref={drop}
-      className={`min-h-[38px] w-full whitespace-pre rounded-md border border-gray-200 py-2 px-2.5 text-gray-600 shadow-sm ${background}`}
+      className={`min-h-[38px] w-full whitespace-pre-wrap rounded-md border border-gray-200 py-2 px-2.5 text-gray-600 shadow-sm ${background}`}
     >
       {value}
     </div>

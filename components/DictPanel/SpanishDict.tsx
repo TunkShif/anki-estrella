@@ -1,33 +1,16 @@
 import useSWR from "swr"
 import { PlayIcon } from "@heroicons/react/outline"
 import { Word } from "../../types"
-import Draggable from "./Draggable"
-
-const fetcher = (url: string) =>
-  fetch(url).then((res) => res.json() as Promise<{ data: Word }>)
-
-type TextProps = {
-  text: string
-  className?: string
-}
-
-const Text = ({ text, className }: TextProps) => {
-  return (
-    <Draggable text={text}>
-      {(ref) => (
-        <div ref={ref} className={className}>
-          {text}
-        </div>
-      )}
-    </Draggable>
-  )
-}
+import DraggableText from "./DraggableText"
+import { querySpanishWord } from "../../lib/dictionary"
+import { useAtom } from "jotai"
+import { queryAtom } from "../../store"
 
 const Content = ({ word }: { word: Word }) => {
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex items-center justify-between text-gray-600">
-        <Text
+        <DraggableText
           text={word.word}
           className="inline-block rounded-md px-1 py-0.5 text-xl font-bold hover:bg-gray-200"
         />
@@ -39,11 +22,11 @@ const Content = ({ word }: { word: Word }) => {
         {word.definitions.map((definition, index) => (
           <div key={index} className="space-y-2">
             <div>
-              <Text
+              <DraggableText
                 text={definition.pos}
                 className="mr-2 inline-block rounded-sm bg-anki-blue px-1 py-0.5 font-display text-white hover:bg-opacity-80"
               />
-              <Text
+              <DraggableText
                 text={definition.sense}
                 className="inline-block rounded-sm px-1 py-0.5 text-gray-800 hover:bg-gray-200"
               />
@@ -51,11 +34,11 @@ const Content = ({ word }: { word: Word }) => {
             <div className="space-y-1">
               {definition.examples.map((example, index) => (
                 <div key={index} className="space-y-1">
-                  <Text
+                  <DraggableText
                     text={example.example}
                     className="rounded-md px-1 py-0.5 text-gray-800 hover:bg-gray-200"
                   />
-                  <Text
+                  <DraggableText
                     text={example.exampleTranslation!!}
                     className="rounded-md px-1 py-0.5 text-gray-600 hover:bg-gray-200"
                   />
@@ -70,10 +53,8 @@ const Content = ({ word }: { word: Word }) => {
 }
 
 const SpanishDict = () => {
-  const { data, error } = useSWR(
-    "https://dictlet-api.tunkshif.one/api/spanishdict/query/comer",
-    fetcher
-  )
+  const [query, _setQuery] = useAtom(queryAtom)
+  const { data, error } = useSWR(query, querySpanishWord)
 
   return (
     <div className="flex h-[640px] w-full flex-col space-y-4 overflow-y-auto rounded-md bg-white p-4 shadow-sm">
