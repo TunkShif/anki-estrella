@@ -1,24 +1,17 @@
-import { useEffect } from "react"
-import { useAtom } from "jotai"
-import * as Select from "@radix-ui/react-select"
 import { CollectionIcon } from "@heroicons/react/outline"
 import { ChevronDownIcon } from "@heroicons/react/solid"
-import { AnkiConnect } from "../../lib"
-import _ from "lodash"
-import { deckAtom, decksAtom } from "../../store"
+import * as Select from "@radix-ui/react-select"
+import { useAtom } from "jotai"
+import { useEffect } from "react"
+import { deckAtom, decksAtom, fetchDecksAtom } from "../../store"
 
 const DeckSelect = () => {
-  const [decks, setDecks] = useAtom(decksAtom)
+  const [decks] = useAtom(decksAtom)
+  const [, fetchDecks] = useAtom(fetchDecksAtom)
   const [deck, setDeck] = useAtom(deckAtom)
 
   useEffect(() => {
-    AnkiConnect.getDecks().then((res) => {
-      setDecks(res.result)
-      if (_.isEmpty(deck)) {
-        const deck = _.last(res.result) || ""
-        setDeck(deck)
-      }
-    })
+    fetchDecks()
   }, [])
 
   return (

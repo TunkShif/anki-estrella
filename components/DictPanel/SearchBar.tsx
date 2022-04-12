@@ -5,7 +5,7 @@ import { queryAtom } from "../../store"
 
 const SearchBar = () => {
   const [text, setText] = useState("")
-  const [_query, setQuery] = useAtom(queryAtom)
+  const [, setQuery] = useAtom(queryAtom)
 
   return (
     <div className="flex w-full rounded-md bg-white px-2 py-0.5 text-gray-600 shadow-sm focus:border-gray-400">

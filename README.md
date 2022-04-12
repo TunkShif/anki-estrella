@@ -1,34 +1,21 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Anki Estrella [WIP]
 
-## Getting Started
+**Anki Estrella** is an online web app that helps you to easily make English/Spanish vocabulary cards.
 
-First, run the development server:
+The project is still working in progress, but all main functionalities have been implemented.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## How to use
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+You'll have to install [Anki Desktop][0] and [AnkiConnect][1] addon.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## TODO
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- [ ] toast notification for connection, card adding status
+- [ ] configurable settings for AnkiConnect API URL
+- [ ] card preview
+- [ ] dark mode
+- [ ] i18n
+- [ ] better way to auto-filling certain kind of fields
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+[0]: https://apps.ankiweb.net/
+[1]: https://ankiweb.net/shared/info/2055492159

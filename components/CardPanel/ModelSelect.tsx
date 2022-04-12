@@ -4,22 +4,16 @@ import * as Select from "@radix-ui/react-select"
 import { useAtom } from "jotai"
 import _ from "lodash"
 import { useEffect } from "react"
-import { AnkiConnect } from "../../lib"
-import { formAtom, modelAtom, modelsAtom } from "../../store"
+import { fetchModelsAtom, formAtom, modelAtom, modelsAtom } from "../../store"
 
 const ModelSelect = () => {
-  const [models, setModels] = useAtom(modelsAtom)
+  const [models] = useAtom(modelsAtom)
   const [model, setModel] = useAtom(modelAtom)
-  const [_form, setForm] = useAtom(formAtom)
+  const [, fetchModels] = useAtom(fetchModelsAtom)
+  const [, setForm] = useAtom(formAtom)
 
   useEffect(() => {
-    AnkiConnect.getModels().then((res) => {
-      setModels(res.result)
-      if (_.isEmpty(model)) {
-        const model = _.first(res.result) || ""
-        setModel(model)
-      }
-    })
+    fetchModels()
   }, [])
 
   useEffect(() => {

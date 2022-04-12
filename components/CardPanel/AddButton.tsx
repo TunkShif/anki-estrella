@@ -4,9 +4,9 @@ import { AnkiConnect } from "../../lib"
 import { deckAtom, formAtom, modelAtom } from "../../store"
 
 const AddButton = () => {
-  const [deck, _setDeck] = useAtom(deckAtom)
-  const [model, _setModel] = useAtom(modelAtom)
-  const [form, _setForm] = useAtom(formAtom)
+  const [deck] = useAtom(deckAtom)
+  const [model] = useAtom(modelAtom)
+  const [form] = useAtom(formAtom)
 
   const onSubmit = () => {
     AnkiConnect.addNote({

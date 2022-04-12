@@ -1,12 +1,14 @@
-import useSWR from "swr"
 import { PlayIcon } from "@heroicons/react/outline"
 import { ChevronDownIcon } from "@heroicons/react/solid"
 import * as Collapsible from "@radix-ui/react-collapsible"
-import { Definition, Word } from "../../types"
-import DraggableText from "./DraggableText"
-import { queryEnglishWord } from "../../lib/dictionary"
 import { useAtom } from "jotai"
-import { queryAtom } from "../../store"
+import useSWR from "swr"
+import { queryEnglishWord } from "../../../lib/dictionary"
+import { queryAtom } from "../../../store"
+import { Definition, Word } from "../../../types"
+import DraggableText from "../DraggableText"
+import LoadingSkeleton from "../LoadingSkeleton"
+import NotFound from "../NotFound"
 
 const Definitions = ({ definitions }: { definitions: Definition[] }) => {
   return (
@@ -60,16 +62,12 @@ const Content = ({ word }: { word: Word }) => {
 }
 
 const EnglishDict = () => {
-  const [query, _setQuery] = useAtom(queryAtom)
+  const [query] = useAtom(queryAtom)
   const { data, error } = useSWR(query, queryEnglishWord)
 
-  return (
-    <div className="flex h-[640px] w-full flex-col space-y-4 overflow-y-auto rounded-md bg-white p-4 shadow-sm">
-      {error && <div>Error</div>}
-      {!data && <div>Loading</div>}
-      {data && <Content word={data.data} />}
-    </div>
-  )
+  if (error) return <NotFound />
+  if (!data) return <LoadingSkeleton />
+  return <Content word={data} />
 }
 
 export default EnglishDict

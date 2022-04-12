@@ -14,6 +14,8 @@ const fetcher = <T>(action: string, params?: any) =>
     })
   }).then((res) => res.json() as Promise<AnkiResponse<T>>)
 
+export const connect = () => fetcher<number>("version")
+
 export const addNote = (note: Note) => fetcher<number>("addNote", { note })
 
 export const getDecks = () => fetcher<string[]>("deckNames")

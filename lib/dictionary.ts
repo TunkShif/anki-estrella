@@ -7,19 +7,18 @@ export const dictionaries = [
 
 export type Dictionaries = typeof dictionaries[number]["id"]
 
-const fetcher = <T>(url: string) =>
-  fetch(url).then((res) => res.json() as Promise<T>)
-
-type DictletResponse = {
-  data: Word
-}
+const fetcher = (url: string) =>
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.data) {
+        return data.data as Word
+      }
+      throw new Error("word not found")
+    })
 
 export const queryEnglishWord = (word: string) =>
-  fetcher<DictletResponse>(
-    `https://dictlet-api.tunkshif.one/api/collins-en-cn/query/${word}`
-  )
+  fetcher(`https://dictlet-api.tunkshif.one/api/collins-en-cn/query/${word}`)
 
 export const querySpanishWord = (word: string) =>
-  fetcher<DictletResponse>(
-    `https://dictlet-api.tunkshif.one/api/spanishdict/query/${word}`
-  )
+  fetcher(`https://dictlet-api.tunkshif.one/api/spanishdict/query/${word}`)

@@ -1,14 +1,14 @@
 import Head from "next/head"
-import { ReactElement } from "react"
+import { ReactNode } from "react"
 import Menu from "../Menu"
 
 type LayoutProps = {
-  children: ReactElement
+  children: ReactNode
 }
 
 const Logo = () => {
   return (
-    <div className="flex items-center">
+    <div className="flex select-none items-center">
       <span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +44,7 @@ const Header = () => {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="mx-auto max-w-6xl p-4">
+    <div className="mx-auto min-w-[1200px] max-w-6xl p-4">
       <Head>
         <title>Anki Estrella</title>
         <meta
