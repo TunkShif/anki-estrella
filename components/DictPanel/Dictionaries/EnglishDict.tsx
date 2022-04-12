@@ -2,8 +2,7 @@ import { PlayIcon } from "@heroicons/react/outline"
 import { ChevronDownIcon } from "@heroicons/react/solid"
 import * as Collapsible from "@radix-ui/react-collapsible"
 import { useAtom } from "jotai"
-import useSWR from "swr"
-import { queryEnglishWord } from "../../../lib/dictionary"
+import { useEnDictionary } from "../../../lib/dictionary"
 import { queryAtom } from "../../../store"
 import { Definition, Word } from "../../../types"
 import DraggableText from "../DraggableText"
@@ -63,7 +62,7 @@ const Content = ({ word }: { word: Word }) => {
 
 const EnglishDict = () => {
   const [query] = useAtom(queryAtom)
-  const { data, error } = useSWR(query, queryEnglishWord)
+  const { data, error } = useEnDictionary(query)
 
   if (error) return <NotFound />
   if (!data) return <LoadingSkeleton />

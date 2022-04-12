@@ -12,6 +12,9 @@ const SearchBar = () => {
       <input
         value={text}
         onChange={(e) => setText(e.target.value)}
+        onKeyPress={(e) => {
+          if (e.key == "Enter") setQuery(text)
+        }}
         type="text"
         className="w-full border-none bg-transparent focus:ring-0"
       />

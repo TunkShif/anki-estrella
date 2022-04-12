@@ -1,7 +1,6 @@
 import { PlayIcon } from "@heroicons/react/outline"
 import { useAtom } from "jotai"
-import useSWR from "swr"
-import { querySpanishWord } from "../../../lib/dictionary"
+import { useEsDicrionary } from "../../../lib/dictionary"
 import { queryAtom } from "../../../store"
 import { Word } from "../../../types"
 import DraggableText from "../DraggableText"
@@ -56,7 +55,7 @@ const Content = ({ word }: { word: Word }) => {
 
 const SpanishDict = () => {
   const [query] = useAtom(queryAtom)
-  const { data, error } = useSWR(query, querySpanishWord)
+  const { data, error } = useEsDicrionary(query)
 
   if (error) return <NotFound />
   if (!data) return <LoadingSkeleton />

@@ -1,3 +1,4 @@
+import useSWR from "swr"
 import { Word } from "../types"
 
 export const dictionaries = [
@@ -17,8 +18,15 @@ const fetcher = (url: string) =>
       throw new Error("word not found")
     })
 
-export const queryEnglishWord = (word: string) =>
+const queryEnWord = (word: string) =>
   fetcher(`https://dictlet-api.tunkshif.one/api/collins-en-cn/query/${word}`)
 
-export const querySpanishWord = (word: string) =>
+const queryEsWord = (word: string) =>
   fetcher(`https://dictlet-api.tunkshif.one/api/spanishdict/query/${word}`)
+
+const createDictionary =
+  (fetcher: (word: string) => Promise<Word>) => (query: string) =>
+    useSWR([fetcher, query], (fetcher, query) => fetcher(query))
+
+export const useEnDictionary = createDictionary(queryEnWord)
+export const useEsDicrionary = createDictionary(queryEsWord)

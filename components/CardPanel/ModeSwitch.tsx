@@ -1,42 +1,24 @@
 import { EyeIcon, PencilAltIcon } from "@heroicons/react/outline"
 import * as Switch from "@radix-ui/react-switch"
-import * as Tooltip from "@radix-ui/react-tooltip"
+import Tooltip from "../shared/Tooltip"
 
 const EditIcon = () => {
   return (
-    <Tooltip.Root>
-      <Tooltip.Trigger asChild>
-        <span className="inline-flex rounded-md p-1 hover:bg-gray-200">
-          <PencilAltIcon className="h-6 w-6 text-gray-600" />
-        </span>
-      </Tooltip.Trigger>
-      <Tooltip.Content
-        sideOffset={4}
-        className="inline-flex items-center rounded-md bg-white px-4 py-2 shadow-md"
-      >
-        <Tooltip.Arrow className="fill-current text-sm text-white" />
-        <span className="block text-gray-600">Edit Mode</span>
-      </Tooltip.Content>
-    </Tooltip.Root>
+    <Tooltip text="Edit Mode">
+      <span className="inline-flex rounded-md p-1 hover:bg-gray-200">
+        <PencilAltIcon className="h-6 w-6 text-gray-600" />
+      </span>
+    </Tooltip>
   )
 }
 
 const PreviewIcon = () => {
   return (
-    <Tooltip.Root>
-      <Tooltip.Trigger asChild>
-        <span className="inline-flex rounded-md p-1 hover:bg-gray-200">
-          <EyeIcon className="h-6 w-6 text-gray-600" />
-        </span>
-      </Tooltip.Trigger>
-      <Tooltip.Content
-        sideOffset={4}
-        className="inline-flex items-center rounded-md bg-white px-4 py-2 shadow-md"
-      >
-        <Tooltip.Arrow className="fill-current text-sm text-white" />
-        <span className="block text-gray-600">Preview Mode</span>
-      </Tooltip.Content>
-    </Tooltip.Root>
+    <Tooltip text="Preview Mode">
+      <span className="inline-flex rounded-md p-1 hover:bg-gray-200">
+        <EyeIcon className="h-6 w-6 text-gray-600" />
+      </span>
+    </Tooltip>
   )
 }
 
