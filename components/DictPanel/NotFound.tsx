@@ -6,10 +6,11 @@ const NotFound = () => {
       <Image
         src="/svg/undraw_alert.svg"
         alt="Alert Illustration"
+        className="dark:opacity-60"
         width={220}
         height={200}
       />
-      <span className="font-display text-sm text-gray-400">
+      <span className="font-display text-sm text-gray-400 dark:text-slate-400">
         Sorry, cannot find the word
       </span>
     </div>

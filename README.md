@@ -14,7 +14,7 @@ You'll have to install [Anki Desktop][0] and [AnkiConnect][1] addon.
 - [x] paste text from clipboard
 - [ ] configurable settings for AnkiConnect API URL
 - [ ] card preview
-- [ ] dark mode
+- [x] dark mode
 - [ ] i18n
 - [ ] better way to auto-filling certain kind of fields
 

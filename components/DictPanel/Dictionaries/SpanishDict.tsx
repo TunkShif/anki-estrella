@@ -13,9 +13,9 @@ const Content = ({ word }: { word: Word }) => {
       <div className="flex items-center justify-between text-gray-600">
         <DraggableText
           text={word.word}
-          className="inline-block rounded-md px-1 py-0.5 text-xl font-bold hover:bg-gray-200"
+          className="inline-block rounded-md px-1 py-0.5 text-xl font-bold hover:bg-gray-200 dark:text-slate-400 dark:hover:bg-slate-700"
         />
-        <span className="rounded-md p-1 hover:bg-gray-200">
+        <span className="rounded-md p-1 hover:bg-gray-200 dark:text-slate-400 dark:hover:bg-slate-700">
           <PlayIcon className="h-6 w-6" />
         </span>
       </div>
@@ -25,11 +25,11 @@ const Content = ({ word }: { word: Word }) => {
             <div>
               <DraggableText
                 text={definition.pos}
-                className="mr-2 inline-block rounded-sm bg-anki-blue px-1 py-0.5 font-display text-white hover:bg-opacity-80"
+                className="mr-2 inline-block rounded-sm bg-anki-blue px-1 py-0.5 font-display text-white hover:bg-opacity-80 dark:bg-sky-500 dark:hover:bg-sky-600"
               />
               <DraggableText
                 text={definition.sense}
-                className="inline-block rounded-sm px-1 py-0.5 text-gray-800 hover:bg-gray-200"
+                className="inline-block rounded-sm px-1 py-0.5 text-gray-800 hover:bg-gray-200 dark:text-slate-400 dark:hover:bg-slate-700"
               />
             </div>
             <div className="space-y-1">
@@ -37,11 +37,11 @@ const Content = ({ word }: { word: Word }) => {
                 <div key={index} className="space-y-1">
                   <DraggableText
                     text={example.example}
-                    className="rounded-md px-1 py-0.5 text-gray-800 hover:bg-gray-200"
+                    className="rounded-md px-1 py-0.5 text-gray-800 hover:bg-gray-200 dark:text-slate-300 dark:hover:bg-slate-700"
                   />
                   <DraggableText
                     text={example.exampleTranslation!!}
-                    className="rounded-md px-1 py-0.5 text-gray-600 hover:bg-gray-200"
+                    className="rounded-md px-1 py-0.5 text-gray-600 hover:bg-gray-200 dark:text-slate-400 dark:hover:bg-slate-700"
                   />
                 </div>
               ))}

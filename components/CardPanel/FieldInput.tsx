@@ -35,7 +35,9 @@ const EditToggle = ({ toggled, onToggle }: EditToggleProps) => {
       <Toggle.Root
         pressed={toggled}
         onPressedChange={onToggle}
-        className="inline-flex rounded-md p-2 hover:bg-gray-200 radix-state-on:bg-gray-200"
+        className={`inline-flex rounded-md p-2 hover:bg-gray-200 dark:hover:bg-slate-700 ${
+          toggled ? "bg-gray-200 dark:bg-slate-700" : ""
+        }`}
       >
         <PencilIcon className="h-5 w-5" />
       </Toggle.Root>
@@ -52,7 +54,7 @@ const ClipboardButton = ({ onClick }: ClipboardButtonProps) => {
     <Tooltip text="Paste">
       <button
         onClick={paste}
-        className="invisible inline-flex rounded-md p-2 opacity-0 transition duration-300 hover:bg-gray-200 group-hover:visible group-hover:opacity-100 radix-state-on:bg-gray-200"
+        className="invisible inline-flex rounded-md p-2 opacity-0 transition duration-300 hover:bg-gray-200 group-hover:visible group-hover:opacity-100 dark:hover:bg-slate-700"
       >
         <ClipboardIcon className="h-5 w-5" />
       </button>
@@ -65,7 +67,7 @@ const ClearButton = ({ onClick }: ClearButtonProps) => {
     <Tooltip text="Clear">
       <button
         onClick={() => onClick("")}
-        className="invisible inline-flex rounded-md p-2 opacity-0 transition duration-300 hover:bg-gray-200 group-hover:visible group-hover:opacity-100 radix-state-on:bg-gray-200"
+        className="invisible inline-flex rounded-md p-2 opacity-0 transition duration-300 hover:bg-gray-200 group-hover:visible group-hover:opacity-100 dark:hover:bg-slate-700"
       >
         <TrashIcon className="h-5 w-5" />
       </button>
@@ -83,17 +85,17 @@ const DropArea = ({ value, onDrop }: DropAreaProps) => {
     })
   }))
 
-  let background = "bg-gray-100"
+  let background = "bg-gray-100 dark:bg-slate-700"
   if (isOver && canDrop) {
-    background = "bg-gray-100"
+    background = "bg-gray-100 dark:bg-slate-700"
   } else if (canDrop) {
-    background = "bg-gray-50"
+    background = "bg-gray-50 dark:bg-slate-800"
   }
 
   return (
     <div
       ref={drop}
-      className={`min-h-[38px] w-full whitespace-pre-wrap rounded-md border border-gray-200 py-2 px-2.5 text-gray-600 shadow-sm ${background}`}
+      className={`min-h-[38px] w-full whitespace-pre-wrap rounded-md border border-gray-200 py-2 px-2.5 text-gray-600 shadow-sm dark:border-none dark:text-slate-400 dark:ring-1 dark:ring-inset dark:ring-white/10 ${background}`}
     >
       {value}
     </div>
@@ -105,7 +107,7 @@ const FieldInput = ({ label, value, onValueChange }: FieldInputProps) => {
 
   return (
     <div className="block space-y-2 rounded-md">
-      <div className="group flex items-baseline justify-between font-bold text-gray-600">
+      <div className="group flex items-baseline justify-between font-bold text-gray-600 dark:text-slate-400">
         <span>{label}</span>
         <div className="flex items-center justify-end space-x-1">
           <ClearButton onClick={onValueChange} />
@@ -121,7 +123,7 @@ const FieldInput = ({ label, value, onValueChange }: FieldInputProps) => {
           value={value}
           onChange={(e) => onValueChange(e.target.value)}
           maxRows={4}
-          className="min-h-[38px] w-full rounded-md border border-gray-200 text-gray-600 shadow-sm focus:border-gray-400 focus:ring-0"
+          className="min-h-[38px] w-full rounded-md border border-gray-200 text-gray-600 shadow-sm focus:border-gray-400 focus:ring-0 dark:border-none dark:bg-slate-800 dark:text-slate-400 dark:ring-1 dark:ring-inset dark:ring-white/10"
         />
       ) : (
         <DropArea value={value} onDrop={onValueChange} />

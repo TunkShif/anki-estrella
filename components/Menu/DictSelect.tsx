@@ -12,19 +12,19 @@ const DictSelect = () => {
       value={dict}
       onValueChange={(value: Dictionaries) => setDict(value)}
     >
-      <Select.Trigger className="inline-flex items-center space-x-1 rounded-md py-1 px-2 font-display text-gray-600 outline-none hover:bg-gray-100">
+      <Select.Trigger className="inline-flex items-center space-x-1 rounded-md py-1 px-2 font-display text-gray-600 outline-none hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700">
         <Select.Value />
         <Select.Icon>
           <ChevronDownIcon className="h-5 w-5 pt-[1px]" />
         </Select.Icon>
       </Select.Trigger>
-      <Select.Content className="overflow-hidden rounded-md bg-white p-2 shadow-md">
+      <Select.Content className="overflow-hidden rounded-md bg-white p-2 shadow-md dark:bg-slate-800 dark:shadow-none dark:ring-1 dark:ring-inset dark:ring-white/10">
         <Select.Viewport className="space-y-1">
           {dictionaries.map((dict) => (
             <Select.Item
               value={dict.id}
               key={dict.id}
-              className="cursor-pointer select-none rounded-md pl-2 font-display text-gray-600 outline-none hover:bg-gray-100"
+              className="cursor-pointer select-none rounded-md pl-2 font-display text-gray-600 outline-none hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700"
             >
               <Select.ItemText>{dict.name}</Select.ItemText>
             </Select.Item>

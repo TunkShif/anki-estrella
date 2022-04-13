@@ -47,7 +47,7 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Toaster position="top-right" />
+      <Toaster position="top-right" toastOptions={{ className: "toast" }} />
       <Layout>{loading ? <div></div> : <Content />}</Layout>
     </>
   )

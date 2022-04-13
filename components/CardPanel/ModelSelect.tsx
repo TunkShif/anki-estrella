@@ -1,52 +1,18 @@
 import { DocumentIcon } from "@heroicons/react/outline"
-import { ChevronDownIcon } from "@heroicons/react/solid"
-import * as Select from "@radix-ui/react-select"
-import { useAtom } from "jotai"
 import _ from "lodash"
-import { useEffect } from "react"
-import { fetchModelsAtom, formAtom, modelAtom, modelsAtom } from "../../store"
+import useModels from "../../hooks/useModels"
+import Select from "../shared/Select"
 
 const ModelSelect = () => {
-  const [models] = useAtom(modelsAtom)
-  const [model, setModel] = useAtom(modelAtom)
-  const [, fetchModels] = useAtom(fetchModelsAtom)
-  const [, setForm] = useAtom(formAtom)
-
-  useEffect(() => {
-    fetchModels()
-  }, [])
-
-  useEffect(() => {
-    setForm({})
-  }, [model])
+  const [model, models, setModel] = useModels()
 
   return (
-    <Select.Root value={model} onValueChange={(value) => setModel(value)}>
-      <Select.Trigger className="inline-flex w-1/2 flex-1 items-center justify-between space-x-1 rounded-md border border-gray-200 p-2 text-gray-600 shadow-sm outline-none hover:bg-gray-100 hover:bg-opacity-60">
-        <span className="inline-flex items-center">
-          <DocumentIcon className="mr-3 h-5 w-5 text-gray-600" />
-          <span className="h-6 w-36 overflow-hidden text-left">
-            <Select.Value />
-          </span>
-        </span>
-        <Select.Icon>
-          <ChevronDownIcon className="h-5 w-5 pt-[1px]" />
-        </Select.Icon>
-      </Select.Trigger>
-      <Select.Content className="overflow-hidden rounded-md bg-white p-2 shadow-md">
-        <Select.Viewport className="space-y-1">
-          {models.map((model) => (
-            <Select.Item
-              value={model}
-              key={model}
-              className="cursor-pointer select-none rounded-md p-2 text-gray-600 outline-none hover:bg-gray-100"
-            >
-              <Select.ItemText>{model}</Select.ItemText>
-            </Select.Item>
-          ))}
-        </Select.Viewport>
-      </Select.Content>
-    </Select.Root>
+    <Select
+      items={models}
+      value={model}
+      onValueChange={setModel}
+      icon={<DocumentIcon className="mr-3 h-5 w-5 text-gray-600 dark:text-slate-400" />}
+    />
   )
 }
 

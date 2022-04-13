@@ -12,7 +12,7 @@ const Logo = () => {
       <span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-16 w-16 fill-anki-blue"
+          className="h-16 w-16 fill-anki-blue dark:fill-sky-500"
           transform="scale(-1 1)"
           viewBox="0 0 1024 1024"
         >
@@ -26,7 +26,7 @@ const Logo = () => {
           ></path>
         </svg>
       </span>
-      <span className="pt-2 font-display text-3xl font-bold text-anki-blue">
+      <span className="pt-2 font-display text-3xl font-bold text-gray-700 dark:text-slate-200">
         Anki Estrella
       </span>
     </div>
@@ -39,6 +39,34 @@ const Header = () => {
       <Logo />
       <Menu />
     </header>
+  )
+}
+
+const Footer = () => {
+  return (
+    <footer className="mt-20 flex flex-col space-y-2 text-gray-600 dark:text-slate-200">
+      <div className="flex items-center justify-center">
+        <a
+          className="underline"
+          rel="noreferrer"
+          href="https://github.com/TunkShif/anki-estrella"
+          target="_blank"
+        >
+          github
+        </a>
+      </div>
+      <div className="flex items-center justify-center text-sm">
+        © 2022 Anki Estrella · Built by{" "}
+        <a
+          className="underline"
+          rel="noreferrer"
+          href="https://github.com/TunkShif"
+          target="_blank"
+        >
+          TunkShif
+        </a>
+      </div>
+    </footer>
   )
 }
 
@@ -58,7 +86,7 @@ const Layout = ({ children }: LayoutProps) => {
 
       <main>{children}</main>
 
-      <footer></footer>
+      <Footer />
     </div>
   )
 }
