@@ -12,6 +12,7 @@ You'll have to install [Anki Desktop][0] and [AnkiConnect][1] addon.
 
 - [x] toast notification for connection, card adding status
 - [x] paste text from clipboard
+- [x] clear all fields button
 - [ ] configurable settings for AnkiConnect API URL
 - [ ] card preview
 - [x] dark mode
