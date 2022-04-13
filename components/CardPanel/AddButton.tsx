@@ -1,24 +1,12 @@
 import { PlusCircleIcon } from "@heroicons/react/outline"
-import { useAtom } from "jotai"
-import { AnkiConnect } from "../../lib"
-import { deckAtom, formAtom, modelAtom } from "../../store"
+import useSaveNote from "../../hooks/useSaveNote"
 
 const AddButton = () => {
-  const [deck] = useAtom(deckAtom)
-  const [model] = useAtom(modelAtom)
-  const [form] = useAtom(formAtom)
-
-  const onSubmit = () => {
-    AnkiConnect.addNote({
-      deckName: deck,
-      modelName: model,
-      fields: form
-    }).then(console.log)
-  }
+  const saveNote = useSaveNote()
 
   return (
     <button
-      onClick={onSubmit}
+      onClick={saveNote}
       className="inline-flex items-center rounded-md bg-white px-3 py-1.5 text-gray-600 shadow-sm hover:bg-gray-50 disabled:bg-gray-50 disabled:text-gray-300"
     >
       <PlusCircleIcon className="mr-2 h-6 w-6" />

@@ -1,11 +1,13 @@
+import { useAtom } from "jotai"
 import type { NextPage } from "next"
-import Layout from "../components/Layout"
+import { useEffect, useState } from "react"
+import { Toaster } from "react-hot-toast"
 import CardPanel from "../components/CardPanel"
 import DictPanel from "../components/DictPanel"
-import { useAtom } from "jotai"
-import { connectedAtom, tryConnectAtom } from "../store"
-import { useEffect, useState } from "react"
+import Layout from "../components/Layout"
 import ConnectionAlert from "../components/Layout/ConnectionAlert"
+import useConnect from "../hooks/useConnection"
+import { connectedAtom } from "../store"
 
 const Content = () => {
   const [connected] = useAtom(connectedAtom)
@@ -28,11 +30,10 @@ const Content = () => {
 
 const Home: NextPage = () => {
   const [loading, setLoading] = useState(true)
-
-  const [, tryConnect] = useAtom(tryConnectAtom)
+  const connect = useConnect()
 
   useEffect(() => {
-    tryConnect()
+    connect()
   }, [])
 
   useEffect(() => {
@@ -44,7 +45,12 @@ const Home: NextPage = () => {
     }
   }, [])
 
-  return <Layout>{loading ? <div></div> : <Content />}</Layout>
+  return (
+    <>
+      <Toaster position="top-right" />
+      <Layout>{loading ? <div></div> : <Content />}</Layout>
+    </>
+  )
 }
 
 export default Home

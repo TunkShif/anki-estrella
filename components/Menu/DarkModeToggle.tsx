@@ -15,8 +15,6 @@ const DarkModeToggle = () => {
     <Toggle.Root
       pressed={theme === "dark"}
       onPressedChange={(pressed) => {
-        console.log(pressed)
-        console.log(theme)
         setTheme(pressed ? "dark" : "light")
       }}
     >

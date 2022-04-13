@@ -1,11 +1,12 @@
 import { useAtom } from "jotai"
-import { connectedAtom, tryConnectAtom } from "../../store"
+import { connectedAtom } from "../../store"
 import * as AlertDialog from "@radix-ui/react-alert-dialog"
 import { XCircleIcon } from "@heroicons/react/solid"
+import useConnect from "../../hooks/useConnection"
 
 const ConnectionAlert = () => {
   const [connected] = useAtom(connectedAtom)
-  const [, tryConnect] = useAtom(tryConnectAtom)
+  const connect = useConnect()
 
   return (
     <AlertDialog.Root open={!connected}>
@@ -27,7 +28,7 @@ const ConnectionAlert = () => {
           </div>
           <div className="flex justify-end">
             <button
-              onClick={() => tryConnect()}
+              onClick={() => connect()}
               className="rounded-md bg-sky-400 px-3 py-1.5 font-display text-white hover:bg-sky-500"
             >
               Retry

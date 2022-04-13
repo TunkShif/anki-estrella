@@ -25,6 +25,7 @@
     "react-dnd": "^16",
     "react-dnd-html5-backend": "^16",
     "react-dom": "^18",
+    "react-hot-toast": "^2.2.0",
     "react-textarea-autosize": "^8.3.3",
     "swr": "^1.2.2",
     "tailwindcss-radix": "^2.0.0"

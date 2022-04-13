@@ -5,11 +5,6 @@ import { AnkiConnect } from "./lib"
 import { Dictionaries } from "./lib/dictionary"
 
 export const connectedAtom = atom(false)
-export const tryConnectAtom = atom(null, (_get, set, _update) => {
-  AnkiConnect.connect()
-    .then((_res) => set(connectedAtom, true))
-    .catch((_err) => set(connectedAtom, false))
-})
 
 export const dictAtom = atomWithStorage<Dictionaries>("dictionary", "en")
 export const queryAtom = atom("")
