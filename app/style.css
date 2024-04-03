@@ -1,0 +1,6 @@
+@layer reset, base, tokens, recipes, utilities;
+
+:root {
+  --font-fig-tree: "Figtree Variable";
+  --global-font-body: var(--font-fig-tree);
+}

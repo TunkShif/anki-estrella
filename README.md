@@ -1,23 +1,36 @@
-## Anki Estrella [WIP]
+# Welcome to Remix + Vite!
 
-**Anki Estrella** is an online web app that helps you to easily make English/Spanish vocabulary cards.
+📖 See the [Remix docs](https://remix.run/docs) and the [Remix Vite docs](https://remix.run/docs/en/main/future/vite) for details on supported features.
 
-The project is still working in progress, but all main functionalities have been implemented.
+## Development
 
-## How to use
+Run the Vite dev server:
 
-You'll have to install [Anki Desktop][0] and [AnkiConnect][1] addon.
+```shellscript
+npm run dev
+```
 
-## TODO
+## Deployment
 
-- [x] toast notification for connection, card adding status
-- [x] paste text from clipboard
-- [x] clear all fields button
-- [ ] configurable settings for AnkiConnect API URL
-- [ ] card preview
-- [x] dark mode
-- [ ] i18n
-- [ ] better way to auto-filling certain kind of fields
+First, build your app for production:
 
-[0]: https://apps.ankiweb.net/
-[1]: https://ankiweb.net/shared/info/2055492159
+```sh
+npm run build
+```
+
+Then run the app in production mode:
+
+```sh
+npm start
+```
+
+Now you'll need to pick a host to deploy it to.
+
+### DIY
+
+If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
+
+Make sure to deploy the output of `npm run build`
+
+- `build/server`
+- `build/client`
