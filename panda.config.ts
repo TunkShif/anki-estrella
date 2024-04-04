@@ -8,7 +8,8 @@ export default defineConfig({
     createPreset({
       grayColor: "slate",
       accentColor: "blue",
-      borderRadius: "lg"
+      borderRadius: "lg",
+      additionalColors: ["red"]
     })
   ],
   include: ["./app/**/*.{js,jsx,ts,tsx}"],
@@ -18,6 +19,21 @@ export default defineConfig({
       tokens: {
         fonts: {
           "fig-tree": { value: "var(--font-fig-tree), sans-serif" }
+        }
+      },
+      semanticTokens: {
+        colors: {
+          error: { value: "{colors.red.9}" }
+        }
+      },
+      slotRecipes: {
+        card: {
+          base: {
+            root: {
+              boxShadow: "none",
+              borderWidth: "1px"
+            }
+          }
         }
       }
     }
