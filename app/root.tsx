@@ -8,7 +8,7 @@ import {
   Scripts,
   ScrollRestoration
 } from "@remix-run/react"
-import { BookAIcon, LayersIcon, SettingsIcon } from "lucide-react"
+import { BookAIcon, HomeIcon, LayersIcon, SettingsIcon } from "lucide-react"
 import { css } from "styled-system/css"
 import { Box } from "styled-system/jsx"
 import { hstack } from "styled-system/patterns"
@@ -66,6 +66,13 @@ const Header = () => {
         <li>
           <IconButton variant="ghost" asChild>
             <Link to="/workspace">
+              <HomeIcon />
+            </Link>
+          </IconButton>
+        </li>
+        <li>
+          <IconButton variant="ghost" asChild>
+            <Link to="/profiles">
               <LayersIcon />
             </Link>
           </IconButton>

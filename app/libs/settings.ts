@@ -1,4 +1,3 @@
-import localforage from "localforage"
 import { z } from "zod"
 
 export type AnkiConnectSettings = z.infer<typeof AnkiConnectSettings>
@@ -8,11 +7,11 @@ export const AnkiConnectSettings = z.object({
 })
 
 export const Settings = {
-  async get() {
-    const settings = await localforage.getItem("settings")
+  get() {
+    const settings = JSON.parse(localStorage.getItem("anki-connect-settings") ?? "null")
     return AnkiConnectSettings.nullable().parse(settings)
   },
   async set(settings: AnkiConnectSettings) {
-    localforage.setItem("settings", settings)
+    localStorage.setItem("anki-connect-settings", JSON.stringify(settings))
   }
 }

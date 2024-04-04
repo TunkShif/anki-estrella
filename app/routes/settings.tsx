@@ -21,7 +21,7 @@ import { AnkiConnectSettings, Settings } from "~/libs/settings"
 const schema = AnkiConnectSettings
 
 export const clientLoader = async () => {
-  const settings = await Settings.get()
+  const settings = Settings.get()
   return json({
     settings
   })
@@ -62,31 +62,29 @@ export default function SettingsPage() {
 
       <Card.Body>
         <Form action="/settings" method="post" {...getFormProps(form)}>
-          <Stack>
-            <Stack gap="4">
-              <Stack gap="1.5">
-                <FormLabel htmlFor={fields.hostname.id}>Hostname</FormLabel>
-                <Input
-                  defaultValue={settings?.hostname ?? "http://localhost"}
-                  {...getInputProps(fields.hostname, { type: "text" })}
-                />
-                <FormErrors errors={fields.hostname.errors} />
-              </Stack>
+          <Stack gap="4">
+            <Stack gap="1.5">
+              <FormLabel htmlFor={fields.hostname.id}>Hostname</FormLabel>
+              <Input
+                defaultValue={settings?.hostname ?? "http://localhost"}
+                {...getInputProps(fields.hostname, { type: "text" })}
+              />
+              <FormErrors errors={fields.hostname.errors} />
+            </Stack>
 
-              <Stack gap="1.5">
-                <FormLabel htmlFor={fields.port.id}>Port</FormLabel>
-                <NumberInput
-                  formatOptions={{ useGrouping: false }}
-                  key={fields.port.key}
-                  id={fields.port.id}
-                  name={fields.port.name}
-                  form={fields.port.formId}
-                  defaultValue={(settings?.port ?? 8765).toString()}
-                  aria-invalid={!fields.port.valid || undefined}
-                  aria-describedby={!fields.port.valid ? fields.port.errorId : undefined}
-                />
-                <FormErrors errors={fields.port.errors} />
-              </Stack>
+            <Stack gap="1.5">
+              <FormLabel htmlFor={fields.port.id}>Port</FormLabel>
+              <NumberInput
+                formatOptions={{ useGrouping: false }}
+                key={fields.port.key}
+                id={fields.port.id}
+                name={fields.port.name}
+                form={fields.port.formId}
+                defaultValue={(settings?.port ?? 8765).toString()}
+                aria-invalid={!fields.port.valid || undefined}
+                aria-describedby={!fields.port.valid ? fields.port.errorId : undefined}
+              />
+              <FormErrors errors={fields.port.errors} />
             </Stack>
           </Stack>
         </Form>
