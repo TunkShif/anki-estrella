@@ -13,6 +13,7 @@ import { css } from "styled-system/css"
 import { Box } from "styled-system/jsx"
 import { hstack } from "styled-system/patterns"
 import { Toaster } from "~/components/toaster"
+import { Tooltip } from "~/components/tooltip"
 import { IconButton } from "~/components/ui/icon-button"
 import styles from "~/style.css?url"
 
@@ -33,7 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/png" href="favicon.png" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
         <Meta />
         <Links />
       </head>
@@ -64,32 +65,40 @@ const Header = () => {
     <header>
       <ul className={hstack({ justifyContent: "flex-end", gap: "0.5" })}>
         <li>
-          <IconButton variant="ghost" asChild>
-            <Link to="/workspace">
-              <HomeIcon />
-            </Link>
-          </IconButton>
+          <Tooltip content="Home">
+            <IconButton variant="ghost" asChild>
+              <Link to="/workspace">
+                <HomeIcon />
+              </Link>
+            </IconButton>
+          </Tooltip>
         </li>
         <li>
-          <IconButton variant="ghost" asChild>
-            <Link to="/profiles">
-              <LayersIcon />
-            </Link>
-          </IconButton>
+          <Tooltip content="Profiles">
+            <IconButton variant="ghost" asChild>
+              <Link to="/profiles">
+                <LayersIcon />
+              </Link>
+            </IconButton>
+          </Tooltip>
         </li>
         <li>
-          <IconButton variant="ghost" asChild>
-            <Link to="/dictionaries">
-              <BookAIcon />
-            </Link>
-          </IconButton>
+          <Tooltip content="Dictionaries">
+            <IconButton variant="ghost" asChild>
+              <Link to="/dictionaries">
+                <BookAIcon />
+              </Link>
+            </IconButton>
+          </Tooltip>
         </li>
         <li>
-          <IconButton variant="ghost" asChild>
-            <Link to="/settings">
-              <SettingsIcon />
-            </Link>
-          </IconButton>
+          <Tooltip content="Settings">
+            <IconButton variant="ghost" asChild>
+              <Link to="/settings">
+                <SettingsIcon />
+              </Link>
+            </IconButton>
+          </Tooltip>
         </li>
       </ul>
     </header>

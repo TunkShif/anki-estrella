@@ -1,11 +1,27 @@
 import { Portal } from "@ark-ui/react"
-import { parseWithZod } from "@conform-to/zod"
-import { type ClientActionFunctionArgs, Form, json, useLoaderData } from "@remix-run/react"
+import {
+  type FieldMetadata,
+  getFormProps,
+  getInputProps,
+  getSelectProps,
+  useForm,
+  useInputControl
+} from "@conform-to/react"
+import { getZodConstraint, parseWithZod } from "@conform-to/zod"
+import {
+  type ClientActionFunctionArgs,
+  Form,
+  json,
+  redirect,
+  useActionData,
+  useLoaderData
+} from "@remix-run/react"
 import { CheckIcon, ChevronsUpDownIcon, SaveIcon } from "lucide-react"
 import { useMemo } from "react"
 import { Box, Stack } from "styled-system/jsx"
 import invariant from "tiny-invariant"
 import { z } from "zod"
+import { FormErrors } from "~/components/form-errors"
 import { toast } from "~/components/toaster"
 import { Button } from "~/components/ui/button"
 import * as Card from "~/components/ui/card"
@@ -34,7 +50,7 @@ export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
 
   await db.profiles.put(submission.value)
   toast.success({ title: "Created", description: "Profile created successfully." })
-  return json({ result: null })
+  return redirect("/profiles")
 }
 
 export const clientLoader = async () => {
@@ -60,40 +76,65 @@ export const clientLoader = async () => {
 export const useCreateProfileLoaderData = () => useLoaderData<typeof clientLoader>()
 
 export default function CreateProfilePage() {
+  const lastResult = useActionData<typeof clientAction>()
+
+  const [form, fields] = useForm({
+    lastResult: lastResult?.result,
+    constraint: getZodConstraint(schema),
+    shouldValidate: "onBlur",
+    onValidate: ({ formData }) => parseWithZod(formData, { schema })
+  })
+
   return (
     <Card.Root>
       <Card.Header>
         <Card.Title>Create Profile</Card.Title>
         <Card.Description>Create a new profile for your Anki deck.</Card.Description>
       </Card.Header>
+
       <Card.Body>
-        <Form action="/profiles/create" method="post">
+        <Form action="/profiles/create" method="post" {...getFormProps(form)}>
           <Stack gap="4">
             <Stack gap="1.5">
-              <FormLabel>Name</FormLabel>
-              <Input />
+              <FormLabel htmlFor={form.id}>Name</FormLabel>
+              <Input {...getInputProps(fields.name, { type: "text" })} />
+              <FormErrors errors={fields.name.errors} />
             </Stack>
 
             <Stack gap="1.5">
-              <FormLabel>Deck</FormLabel>
-              <DeckSelect />
+              <FormLabel htmlFor={form.id}>Deck</FormLabel>
+              <DeckSelect meta={fields.deck} />
+              <FormErrors errors={fields.deck.errors} />
             </Stack>
 
             <Stack gap="1.5">
               <FormLabel>Model</FormLabel>
-              <ModelSelect />
+              <ModelSelect
+                {...getSelectProps(fields.model)}
+                meta={fields.model}
+                defaultValue={[]}
+              />
+              <FormErrors errors={fields.model.errors} />
             </Stack>
 
             <Stack gap="1.5">
               <FormLabel>Default Dictionary</FormLabel>
-              <DictionarySelect />
+              <DictionarySelect
+                {...getSelectProps(fields.dictionaryId)}
+                meta={fields.dictionaryId}
+                defaultValue={[]}
+              />
+              <FormErrors errors={fields.dictionaryId.errors} />
             </Stack>
           </Stack>
         </Form>
       </Card.Body>
+
       <Card.Footer gap="2">
-        <Button variant="outline">Reset</Button>
-        <Button>
+        <Button variant="outline" onClick={() => form.reset()}>
+          Reset
+        </Button>
+        <Button type="submit" form={form.id}>
           <SaveIcon /> Save
         </Button>
       </Card.Footer>
@@ -134,7 +175,8 @@ const buildTreeNodes = (paths: string[]) => {
   return root.children ?? []
 }
 
-const DeckSelect = (props: Omit<TreeViewProps, "data">) => {
+const DeckSelect = (props: Omit<TreeViewProps, "data"> & { meta: FieldMetadata<string> }) => {
+  const control = useInputControl(props.meta)
   const { decks } = useCreateProfileLoaderData()
   const data = useMemo(
     () => ({
@@ -145,12 +187,22 @@ const DeckSelect = (props: Omit<TreeViewProps, "data">) => {
   )
   return (
     <Box p="2" borderWidth="1" rounded="lg">
-      <TreeView {...props} data={data} onSelectionChange={(details) => console.log(details)} />
+      <TreeView
+        {...props}
+        data={data}
+        onSelectionChange={(details) => {
+          control.change(details.focusedId ?? undefined)
+          control.blur()
+        }}
+      />
     </Box>
   )
 }
 
-const ModelSelect = (props: Omit<Select.RootProps, "items" | "children">) => {
+const ModelSelect = (
+  props: Omit<Select.RootProps, "items" | "children"> & { meta: FieldMetadata<string> }
+) => {
+  const control = useInputControl(props.meta)
   const { models } = useCreateProfileLoaderData()
   const items = useMemo(() => {
     return models.map((model) => ({
@@ -160,7 +212,13 @@ const ModelSelect = (props: Omit<Select.RootProps, "items" | "children">) => {
   }, [models])
 
   return (
-    <Select.Root {...props} items={items} positioning={{ sameWidth: true }}>
+    <Select.Root
+      {...props}
+      items={items}
+      positioning={{ sameWidth: true }}
+      multiple={false}
+      onValueChange={() => control.blur()}
+    >
       <Select.Control>
         <Select.Trigger>
           <Select.ValueText />
@@ -185,7 +243,10 @@ const ModelSelect = (props: Omit<Select.RootProps, "items" | "children">) => {
   )
 }
 
-const DictionarySelect = (props: Omit<Select.RootProps, "items" | "children">) => {
+const DictionarySelect = (
+  props: Omit<Select.RootProps, "items" | "children"> & { meta: FieldMetadata<number> }
+) => {
+  const control = useInputControl(props.meta)
   const { dictionaries } = useCreateProfileLoaderData()
   const items = useMemo(() => {
     return dictionaries.map((model) => ({
@@ -195,7 +256,12 @@ const DictionarySelect = (props: Omit<Select.RootProps, "items" | "children">) =
   }, [dictionaries])
 
   return (
-    <Select.Root {...props} items={items} positioning={{ sameWidth: true }}>
+    <Select.Root
+      {...props}
+      items={items}
+      positioning={{ sameWidth: true }}
+      onValueChange={() => control.blur()}
+    >
       <Select.Control>
         <Select.Trigger>
           <Select.ValueText />
