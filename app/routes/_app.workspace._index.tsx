@@ -1,5 +1,7 @@
+import { useForm } from "@conform-to/react"
 import {
   type ClientLoaderFunctionArgs,
+  Form,
   Link,
   json,
   redirect,
@@ -7,13 +9,16 @@ import {
   useNavigate,
   useNavigation
 } from "@remix-run/react"
-import { PackageIcon } from "lucide-react"
+import { PackageIcon, SaveIcon } from "lucide-react"
 import { toInt } from "radash"
 import { Box, HStack, Stack } from "styled-system/jsx"
 import invariant from "tiny-invariant"
-import { Icon } from "~/components/ui/icon"
+import { Button } from "~/components/ui/button"
+import * as Card from "~/components/ui/card"
+import { FormLabel } from "~/components/ui/form-label"
 import * as Tabs from "~/components/ui/tabs"
 import { Text } from "~/components/ui/text"
+import { Textarea } from "~/components/ui/textarea"
 import { getClient } from "~/libs/anki-connect"
 import { db } from "~/libs/database"
 
@@ -46,11 +51,11 @@ export default function WorkspacePage() {
   const { profiles, profile, fields } = useWorkspaceLoaderData()
 
   const navigate = useNavigate()
-  const navigation = useNavigation()
-  const isNavigating = navigation.state !== "idle"
+
+  // const [form, fields] = useForm({id: `add-note-${profile.name}`})
 
   return (
-    <Box>
+    <Stack>
       <Tabs.Root
         variant="enclosed"
         size="sm"
@@ -70,23 +75,45 @@ export default function WorkspacePage() {
           <Tabs.Indicator />
         </Tabs.List>
       </Tabs.Root>
-      <Stack
-        p="4"
-        minH="xs"
-        _loading={{ opacity: "0.6", pointerEvents: "none" }}
-        aria-busy={isNavigating || undefined}
-      >
-        <HStack>
-          <HStack>
-            <Text size="sm" fontWeight="medium">
-              <Icon mr="1">
-                <PackageIcon />
-              </Icon>
-              Deck:
+
+      <Card.Root>
+        <Card.Header>
+          <Card.Title>{profile.name}</Card.Title>
+          <Card.Description>
+            <Text>
+              {"Save to "}
+              <Text color="fg.default" as="span">
+                {profile.deck}
+              </Text>
+              {" using "}
+              <Text color="fg.default" as="span">
+                {profile.model}
+              </Text>
+              {" model."}
             </Text>
-          </HStack>
-        </HStack>
-      </Stack>
-    </Box>
+          </Card.Description>
+        </Card.Header>
+
+        <Card.Body>
+          <Form action="/workspace?index" method="post">
+            <Stack gap="4">
+              {fields.map((field) => (
+                <Stack key={`${profile}-${field}`} gap="1.5">
+                  <FormLabel>{field}</FormLabel>
+                  <Textarea />
+                </Stack>
+              ))}
+            </Stack>
+          </Form>
+        </Card.Body>
+
+        <Card.Footer>
+          <Button>
+            <SaveIcon />
+            Save
+          </Button>
+        </Card.Footer>
+      </Card.Root>
+    </Stack>
   )
 }
