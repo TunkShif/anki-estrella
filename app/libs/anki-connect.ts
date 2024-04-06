@@ -1,6 +1,7 @@
 import type { KyInstance } from "ky"
 import ky from "ky"
 import { z } from "zod"
+import { clientAtom, store } from "~/libs/store"
 
 const ANKI_CONNECT_VERSION = 6
 
@@ -101,3 +102,5 @@ export class AnkiConnect {
     return this.request("addNote", params)
   }
 }
+
+export const getClient = () => store.get(clientAtom)

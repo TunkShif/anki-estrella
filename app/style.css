@@ -4,3 +4,13 @@
   --font-fig-tree: "Figtree Variable";
   --global-font-body: var(--font-fig-tree);
 }
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+

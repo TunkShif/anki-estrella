@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { settingsAtom, store } from "~/libs/store"
 
 export type AnkiConnectSettings = z.infer<typeof AnkiConnectSettings>
 export const AnkiConnectSettings = z.object({
@@ -8,10 +9,9 @@ export const AnkiConnectSettings = z.object({
 
 export const Settings = {
   get() {
-    const settings = JSON.parse(localStorage.getItem("anki-connect-settings") ?? "null")
-    return AnkiConnectSettings.nullable().parse(settings)
+    return store.get(settingsAtom)
   },
   async set(settings: AnkiConnectSettings) {
-    localStorage.setItem("anki-connect-settings", JSON.stringify(settings))
+    store.set(settingsAtom, settings)
   }
 }

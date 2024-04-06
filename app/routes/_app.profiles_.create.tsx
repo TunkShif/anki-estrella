@@ -29,9 +29,8 @@ import { FormLabel } from "~/components/ui/form-label"
 import { Input } from "~/components/ui/input"
 import * as Select from "~/components/ui/select"
 import { TreeView, type TreeViewProps } from "~/components/ui/tree-view"
-import { AnkiConnect } from "~/libs/anki-connect"
+import { getClient } from "~/libs/anki-connect"
 import { db } from "~/libs/database"
-import { Settings } from "~/libs/settings"
 
 const schema = z.object({
   name: z.string().trim().min(1),
@@ -39,6 +38,8 @@ const schema = z.object({
   model: z.string().trim().min(1),
   dictionaryId: z.number().gt(0)
 })
+
+const client = getClient()
 
 export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
   const formData = await request.formData()
@@ -54,8 +55,6 @@ export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
 }
 
 export const clientLoader = async () => {
-  const client = new AnkiConnect(Settings.get() ?? { hostname: "http://localhost", port: 8765 })
-
   const [decksResult, modelsResult, dictionaries] = await Promise.all([
     client.deckNames(),
     client.modelNames(),
@@ -249,9 +248,9 @@ const DictionarySelect = (
   const control = useInputControl(props.meta)
   const { dictionaries } = useCreateProfileLoaderData()
   const items = useMemo(() => {
-    return dictionaries.map((model) => ({
-      label: model.name,
-      value: model.id
+    return dictionaries.map((dictionary) => ({
+      label: dictionary.name,
+      value: dictionary.id
     }))
   }, [dictionaries])
 

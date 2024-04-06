@@ -2,22 +2,24 @@ import Dexie, { type Table } from "dexie"
 import { DEFAULT_DICTIONARIES } from "~/libs/dictionary"
 
 export type Dictionary = {
-  id?: number
+  id: number
   name: string
   url: string
 }
 
 export type Profile = {
-  id?: number
+  id: number
   name: string
   deck: string
   model: string
   dictionaryId: number
 }
 
+type Input<T> = Omit<T, "id">
+
 export class Database extends Dexie {
-  dictionaries!: Table<Dictionary>
-  profiles!: Table<Profile>
+  dictionaries!: Table<Dictionary, number, Input<Dictionary>>
+  profiles!: Table<Profile, number, Input<Profile>>
 
   constructor() {
     super("anki")
