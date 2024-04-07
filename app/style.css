@@ -5,6 +5,10 @@
   --global-font-body: var(--font-fig-tree);
 }
 
+textarea {
+  field-sizing: content;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

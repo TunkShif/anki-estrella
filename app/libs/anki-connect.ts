@@ -30,7 +30,7 @@ type AnkiConnectActionMap = {
   deckNames: AnkiConnectAction<NoParams, string[]>
   modelNames: AnkiConnectAction<NoParams, string[]>
   modelFieldNames: AnkiConnectAction<{ modelName: string }, string[]>
-  addNote: AnkiConnectAction<AddNoteParams, number>
+  addNote: AnkiConnectAction<{ note: AddNoteParams }, number>
 }
 
 type AnkiConnectResult<Data> =
@@ -42,7 +42,7 @@ export type AddNoteParams = z.infer<typeof AddNoteParams>
 export const AddNoteParams = z.object({
   deckName: z.string().trim().min(1),
   modelName: z.string().trim().min(1),
-  fields: z.record(z.string().trim().min(1), z.string().trim().min(1))
+  fields: z.record(z.string().trim().min(1), z.string().optional())
 })
 
 type AnkiConnectOptions = {
@@ -99,7 +99,7 @@ export class AnkiConnect {
   }
 
   addNote(params: AddNoteParams) {
-    return this.request("addNote", params)
+    return this.request("addNote", { note: params })
   }
 }
 

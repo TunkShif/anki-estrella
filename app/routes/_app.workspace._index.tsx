@@ -1,28 +1,56 @@
-import { useForm } from "@conform-to/react"
+import { getFormProps, getInputProps, getTextareaProps, useForm } from "@conform-to/react"
+import { getZodConstraint, parseWithZod } from "@conform-to/zod"
 import {
+  type ClientActionFunctionArgs,
   type ClientLoaderFunctionArgs,
-  Form,
   Link,
   json,
   redirect,
+  useActionData,
+  useFetcher,
   useLoaderData,
-  useNavigate,
-  useNavigation
+  useNavigate
 } from "@remix-run/react"
-import { PackageIcon, SaveIcon } from "lucide-react"
+import { SaveIcon } from "lucide-react"
 import { toInt } from "radash"
-import { Box, HStack, Stack } from "styled-system/jsx"
+import { useCallback, useEffect, useRef } from "react"
+import { Stack } from "styled-system/jsx"
 import invariant from "tiny-invariant"
+import { toast } from "~/components/toaster"
 import { Button } from "~/components/ui/button"
 import * as Card from "~/components/ui/card"
 import { FormLabel } from "~/components/ui/form-label"
 import * as Tabs from "~/components/ui/tabs"
 import { Text } from "~/components/ui/text"
 import { Textarea } from "~/components/ui/textarea"
-import { getClient } from "~/libs/anki-connect"
+import { AddNoteParams, getClient } from "~/libs/anki-connect"
 import { db } from "~/libs/database"
 
 const client = getClient()
+const schema = AddNoteParams
+
+export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
+  const formData = await request.formData()
+  const submission = parseWithZod(formData, { schema })
+  invariant(submission.status === "success")
+
+  const addNoteResult = await client.addNote(submission.value)
+  if (addNoteResult.kind !== "Success") {
+    return json({
+      ok: false,
+      result: submission.reply()
+    })
+  }
+
+  toast.success({
+    title: "Note created",
+    description: "Your note has been created successfully."
+  })
+  return json({
+    ok: true,
+    result: null
+  })
+}
 
 export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
   const searchParams = new URL(request.url).searchParams
@@ -48,11 +76,30 @@ export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
 export const useWorkspaceLoaderData = () => useLoaderData<typeof clientLoader>()
 
 export default function WorkspacePage() {
-  const { profiles, profile, fields } = useWorkspaceLoaderData()
+  const { profiles, profile, fields: fieldNames } = useWorkspaceLoaderData()
 
+  const fetcher = useFetcher<typeof clientAction>()
+  const lastResult = useActionData<typeof clientAction>()
   const navigate = useNavigate()
 
-  // const [form, fields] = useForm({id: `add-note-${profile.name}`})
+  const [form, fields] = useForm({
+    id: `add-note-${profile.name}`,
+    lastResult: lastResult?.result,
+    constraint: getZodConstraint(schema),
+    shouldValidate: "onBlur",
+    onValidate: ({ formData }) => parseWithZod(formData, { schema })
+  })
+  const cardFields = fields.fields.getFieldset()
+
+  const formRef = useRef<HTMLFormElement>(null)
+  const resetForm = useCallback(() => {
+    formRef.current?.reset()
+  }, [])
+
+  const isSubmissionSuccess = fetcher.state === "idle" && fetcher.data?.ok
+  useEffect(() => {
+    if (isSubmissionSuccess) resetForm()
+  }, [isSubmissionSuccess, resetForm])
 
   return (
     <Stack>
@@ -95,20 +142,28 @@ export default function WorkspacePage() {
         </Card.Header>
 
         <Card.Body>
-          <Form action="/workspace?index" method="post">
+          <fetcher.Form
+            ref={formRef}
+            action="/workspace?index"
+            method="post"
+            {...getFormProps(form)}
+          >
+            <input {...getInputProps(fields.deckName, { type: "hidden" })} value={profile.deck} />
+            <input {...getInputProps(fields.modelName, { type: "hidden" })} value={profile.model} />
             <Stack gap="4">
-              {fields.map((field) => (
+              {fieldNames.map((field) => (
                 <Stack key={`${profile}-${field}`} gap="1.5">
-                  <FormLabel>{field}</FormLabel>
-                  <Textarea />
+                  <FormLabel htmlFor={cardFields[field].id}>{field}</FormLabel>
+                  <Textarea {...getTextareaProps(cardFields[field])} />
                 </Stack>
               ))}
             </Stack>
-          </Form>
+          </fetcher.Form>
         </Card.Body>
 
-        <Card.Footer>
-          <Button>
+        <Card.Footer gap="2">
+          <Button variant="outline">Reset</Button>
+          <Button type="submit" form={form.id}>
             <SaveIcon />
             Save
           </Button>
