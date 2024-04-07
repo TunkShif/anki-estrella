@@ -39,8 +39,6 @@ const schema = z.object({
   dictionaryId: z.number().gt(0)
 })
 
-const client = getClient()
-
 const useCreateProfileLoaderData = () => useLoaderData<typeof clientLoader>()
 
 export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
@@ -57,6 +55,7 @@ export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
 }
 
 export const clientLoader = async () => {
+  const client = getClient()
   const [decksResult, modelsResult, dictionaries] = await Promise.all([
     client.deckNames(),
     client.modelNames(),
@@ -130,7 +129,7 @@ export default function CreateProfilePage() {
       </Card.Body>
 
       <Card.Footer gap="2">
-        <Button variant="outline" onClick={() => form.reset()}>
+        <Button type="reset" variant="outline" form={form.id}>
           Reset
         </Button>
         <Button type="submit" form={form.id}>

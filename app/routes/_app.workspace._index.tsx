@@ -1,4 +1,4 @@
-import { getFormProps, getInputProps, getTextareaProps, useForm } from "@conform-to/react"
+import { getFormProps, getInputProps, useForm } from "@conform-to/react"
 import { getZodConstraint, parseWithZod } from "@conform-to/zod"
 import {
   type ClientActionFunctionArgs,
@@ -16,17 +16,16 @@ import { toInt } from "radash"
 import { useCallback, useEffect, useRef } from "react"
 import { Stack } from "styled-system/jsx"
 import invariant from "tiny-invariant"
+import { FieldEditor, type FieldEditorAction } from "~/components/field-editor"
 import { toast } from "~/components/toaster"
 import { Button } from "~/components/ui/button"
 import * as Card from "~/components/ui/card"
 import { FormLabel } from "~/components/ui/form-label"
 import * as Tabs from "~/components/ui/tabs"
 import { Text } from "~/components/ui/text"
-import { Textarea } from "~/components/ui/textarea"
 import { AddNoteParams, getClient } from "~/libs/anki-connect"
 import { db } from "~/libs/database"
 
-const client = getClient()
 const schema = AddNoteParams
 
 const useWorkspaceLoaderData = () => useLoaderData<typeof clientLoader>()
@@ -36,6 +35,7 @@ export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
   const submission = parseWithZod(formData, { schema })
   invariant(submission.status === "success")
 
+  const client = getClient()
   const addNoteResult = await client.addNote(submission.value)
   if (addNoteResult.kind !== "Success") {
     return json({
@@ -68,6 +68,7 @@ export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
   const profile = await db.profiles.get(profileId)
   invariant(profile)
 
+  const client = getClient()
   const fieldsResult = await client.modelFieldNames(profile.model)
   invariant(fieldsResult.kind === "Success" && fieldsResult.data)
   const fields = fieldsResult.data
@@ -92,8 +93,12 @@ export default function WorkspacePage() {
   const cardFields = fields.fields.getFieldset()
 
   const formRef = useRef<HTMLFormElement>(null)
+  const editorsRef = useRef<(FieldEditorAction | null)[]>([])
   const resetForm = useCallback(() => {
     formRef.current?.reset()
+    for (const editor of editorsRef.current) {
+      editor?.reset()
+    }
   }, [])
 
   const isSubmissionSuccess = fetcher.state === "idle" && fetcher.data?.ok
@@ -154,7 +159,10 @@ export default function WorkspacePage() {
               {fieldNames.map((field) => (
                 <Stack key={`${profile}-${field}`} gap="1.5">
                   <FormLabel htmlFor={cardFields[field].id}>{field}</FormLabel>
-                  <Textarea {...getTextareaProps(cardFields[field])} />
+                  <FieldEditor
+                    meta={cardFields[field]}
+                    editorRef={(action) => editorsRef.current.push(action)}
+                  />
                 </Stack>
               ))}
             </Stack>
@@ -162,7 +170,9 @@ export default function WorkspacePage() {
         </Card.Body>
 
         <Card.Footer gap="2">
-          <Button variant="outline">Reset</Button>
+          <Button variant="outline" onClick={resetForm}>
+            Reset
+          </Button>
           <Button type="submit" form={form.id}>
             <SaveIcon />
             Save
