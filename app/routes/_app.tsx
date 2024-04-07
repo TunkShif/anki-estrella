@@ -4,7 +4,7 @@ import { Settings } from "~/libs/settings"
 
 export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
   const route = new URL(request.url).pathname
-  const settings = await Settings.get()
+  const settings = Settings.get()
   if (!settings && route !== "/settings") {
     toast.create({
       title: "Configuration Needed",

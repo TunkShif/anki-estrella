@@ -41,6 +41,8 @@ const schema = z.object({
 
 const client = getClient()
 
+const useCreateProfileLoaderData = () => useLoaderData<typeof clientLoader>()
+
 export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
   const formData = await request.formData()
   const submission = parseWithZod(formData, { schema })
@@ -71,8 +73,6 @@ export const clientLoader = async () => {
     dictionaries
   })
 }
-
-export const useCreateProfileLoaderData = () => useLoaderData<typeof clientLoader>()
 
 export default function CreateProfilePage() {
   const lastResult = useActionData<typeof clientAction>()

@@ -20,6 +20,8 @@ import { AnkiConnectSettings, Settings } from "~/libs/settings"
 
 const schema = AnkiConnectSettings
 
+const useSettingsLoaderData = () => useLoaderData<typeof clientLoader>()
+
 export const clientLoader = async () => {
   const settings = Settings.get()
   return json({
@@ -39,8 +41,6 @@ export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
   toast.success({ title: "Saved!", description: "Your settings has been saved." })
   return json({ result: null })
 }
-
-export const useSettingsLoaderData = () => useLoaderData<typeof clientLoader>()
 
 export default function SettingsPage() {
   const { settings } = useSettingsLoaderData()

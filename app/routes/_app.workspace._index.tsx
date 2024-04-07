@@ -29,6 +29,8 @@ import { db } from "~/libs/database"
 const client = getClient()
 const schema = AddNoteParams
 
+const useWorkspaceLoaderData = () => useLoaderData<typeof clientLoader>()
+
 export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
   const formData = await request.formData()
   const submission = parseWithZod(formData, { schema })
@@ -72,8 +74,6 @@ export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
 
   return json({ profiles, profile, fields })
 }
-
-export const useWorkspaceLoaderData = () => useLoaderData<typeof clientLoader>()
 
 export default function WorkspacePage() {
   const { profiles, profile, fields: fieldNames } = useWorkspaceLoaderData()
