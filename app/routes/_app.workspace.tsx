@@ -8,7 +8,6 @@ import {
   redirect,
   useActionData,
   useFetcher,
-  useLoaderData,
   useNavigate
 } from "@remix-run/react"
 import { SaveIcon } from "lucide-react"
@@ -25,10 +24,9 @@ import * as Tabs from "~/components/ui/tabs"
 import { Text } from "~/components/ui/text"
 import { AddNoteParams, getClient } from "~/libs/anki-connect"
 import { db } from "~/libs/database"
+import { useWorkspaceLoaderData } from "~/libs/loaders"
 
 const schema = AddNoteParams
-
-const useWorkspaceLoaderData = () => useLoaderData<typeof clientLoader>()
 
 export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
   const formData = await request.formData()
@@ -58,22 +56,26 @@ export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
   const searchParams = new URL(request.url).searchParams
 
   const profiles = await db.profiles.toArray()
+  const dictionaries = await db.dictionaries.toArray()
 
   const isEmpty = profiles.length === 0
   if (isEmpty) {
-    return redirect("/workspace/welcome")
+    return redirect("/welcome")
   }
 
   const profileId = toInt(searchParams.get("profile")) || profiles[0].id
   const profile = await db.profiles.get(profileId)
   invariant(profile)
 
+  const dictionary = await db.dictionaries.get(profile.dictionaryId)
+  invariant(dictionary)
+
   const client = getClient()
   const fieldsResult = await client.modelFieldNames(profile.model)
   invariant(fieldsResult.kind === "Success" && fieldsResult.data)
   const fields = fieldsResult.data
 
-  return json({ profiles, profile, fields })
+  return json({ profiles, profile, dictionaries, dictionary, fields })
 }
 
 export default function WorkspacePage() {
@@ -170,7 +172,7 @@ export default function WorkspacePage() {
         </Card.Body>
 
         <Card.Footer gap="2">
-          <Button variant="outline" onClick={resetForm}>
+          <Button type="button" variant="outline" onClick={resetForm}>
             Reset
           </Button>
           <Button type="submit" form={form.id}>

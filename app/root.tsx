@@ -6,12 +6,14 @@ import {
   type MetaFunction,
   Outlet,
   Scripts,
-  ScrollRestoration
+  ScrollRestoration,
+  useNavigation
 } from "@remix-run/react"
 import { BookAIcon, HomeIcon, LayersIcon, SettingsIcon } from "lucide-react"
 import { css } from "styled-system/css"
 import { Box } from "styled-system/jsx"
 import { hstack } from "styled-system/patterns"
+import { Spinner } from "~/components/spinner"
 import { Toaster } from "~/components/toaster"
 import { Tooltip } from "~/components/tooltip"
 import { IconButton } from "~/components/ui/icon-button"
@@ -49,10 +51,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const navigation = useNavigation()
+  const isNavigating = navigation.state !== "idle"
+
   return (
     <Box py="6" mx="auto" maxW="lg">
       <Header />
-      <main className={css({ mt: "2" })}>
+      <main
+        className={css({
+          mt: "2",
+          _loading: { opacity: "0.6" }
+        })}
+        aria-busy={isNavigating || undefined}
+      >
         <Outlet />
       </main>
       <Toaster />
@@ -61,8 +72,13 @@ export default function App() {
 }
 
 const Header = () => {
+  const navigation = useNavigation()
+  const isNavigating = navigation.state !== "idle"
+
   return (
-    <header>
+    <header className={hstack({ gap: "0", justifyContent: "space-between" })}>
+      <Box>{isNavigating && <Spinner color="accent.text" />}</Box>
+
       <ul className={hstack({ justifyContent: "flex-end", gap: "0.5" })}>
         <li>
           <Tooltip content="Home">

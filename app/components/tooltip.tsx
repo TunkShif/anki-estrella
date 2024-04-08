@@ -12,7 +12,7 @@ export const Tooltip = ({ content, children, ...rest }: TooltipProps) => {
     <TooltipPrimitives.Root openDelay={200} {...rest}>
       <TooltipPrimitives.Trigger asChild>{children}</TooltipPrimitives.Trigger>
       <Portal>
-        <TooltipPrimitives.Positioner>
+        <TooltipPrimitives.Positioner css={{ "--z-index": "{zIndex.tooltip}" }}>
           <TooltipPrimitives.Content>{content}</TooltipPrimitives.Content>
         </TooltipPrimitives.Positioner>
       </Portal>

@@ -1,12 +1,6 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react"
 import { getZodConstraint, parseWithZod } from "@conform-to/zod"
-import {
-  type ClientActionFunctionArgs,
-  Form,
-  json,
-  useActionData,
-  useLoaderData
-} from "@remix-run/react"
+import { type ClientActionFunctionArgs, Form, json, useActionData } from "@remix-run/react"
 import { SaveIcon } from "lucide-react"
 import { Stack } from "styled-system/jsx"
 import { FormErrors } from "~/components/form-errors"
@@ -16,11 +10,10 @@ import * as Card from "~/components/ui/card"
 import { FormLabel } from "~/components/ui/form-label"
 import { Input } from "~/components/ui/input"
 import { NumberInput } from "~/components/ui/number-input"
+import { useSettingsLoaderData } from "~/libs/loaders"
 import { AnkiConnectSettings, Settings } from "~/libs/settings"
 
 const schema = AnkiConnectSettings
-
-const useSettingsLoaderData = () => useLoaderData<typeof clientLoader>()
 
 export const clientLoader = async () => {
   const settings = Settings.get()
