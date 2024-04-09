@@ -136,12 +136,12 @@ export default function WorkspacePage() {
           <Card.Description>
             <Text>
               {"Save to "}
-              <Text color="fg.default" as="span">
-                {profile.deck}
+              <Text color="fg.default" asChild>
+                <span>{profile.deck}</span>
               </Text>
               {" using "}
-              <Text color="fg.default" as="span">
-                {profile.model}
+              <Text color="fg.default" asChild>
+                <span>{profile.model}</span>
               </Text>
               {" model."}
             </Text>
