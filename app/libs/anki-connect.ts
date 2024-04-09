@@ -30,7 +30,10 @@ type AnkiConnectActionMap = {
   deckNames: AnkiConnectAction<NoParams, string[]>
   modelNames: AnkiConnectAction<NoParams, string[]>
   modelFieldNames: AnkiConnectAction<{ modelName: string }, string[]>
-  addNote: AnkiConnectAction<{ note: AddNoteParams }, number>
+  addNote: AnkiConnectAction<
+    { note: AddNoteParams & { options: { allowDuplicate: boolean } } },
+    number
+  >
 }
 
 type AnkiConnectResult<Data> =
@@ -99,7 +102,7 @@ export class AnkiConnect {
   }
 
   addNote(params: AddNoteParams) {
-    return this.request("addNote", { note: params })
+    return this.request("addNote", { note: { ...params, options: { allowDuplicate: true } } })
   }
 }
 

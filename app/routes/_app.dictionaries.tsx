@@ -1,7 +1,7 @@
 import { Link, json } from "@remix-run/react"
 import { EditIcon, PlusCircleIcon } from "lucide-react"
 import { css } from "styled-system/css"
-import { Box, Center, HStack } from "styled-system/jsx"
+import { Box, Center, HStack, Stack } from "styled-system/jsx"
 import { stack } from "styled-system/patterns"
 import { Button } from "~/components/ui/button"
 import * as Card from "~/components/ui/card"
@@ -57,7 +57,12 @@ export default function DictionariesPage() {
                     />
                   </Center>
 
-                  <Text fontWeight="medium">{dictionary.name}</Text>
+                  <Stack gap="0">
+                    <Text fontWeight="medium">{dictionary.name}</Text>
+                    <Text size="xs" color="fg.subtle">
+                      {dictionary.url}
+                    </Text>
+                  </Stack>
                 </HStack>
 
                 <Button size="sm" variant="ghost" asChild>

@@ -1,0 +1,16 @@
+{
+  "name": "Anki Estrella",
+  "short_name": "Anki Estrella",
+  "description": "Anki Estrella is a flashcard making helper for Anki.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdfcfd",
+  "theme_color": "#0090ff",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

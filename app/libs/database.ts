@@ -5,6 +5,7 @@ export type Dictionary = {
   id: number
   name: string
   url: string
+  icon: string
 }
 
 export type Profile = {
@@ -23,7 +24,7 @@ export class Database extends Dexie {
 
   constructor() {
     super("anki")
-    this.version(2).stores({
+    this.version(3).stores({
       dictionaries: "++id",
       profiles: "++id, dictionaryId"
     })

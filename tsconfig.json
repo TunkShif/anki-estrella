@@ -8,6 +8,7 @@
     "**/.client/**/*.tsx",
     "styled-system"
   ],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["@remix-run/node", "vite/client"],

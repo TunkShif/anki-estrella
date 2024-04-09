@@ -17,8 +17,8 @@ import {
   useLoaderData
 } from "@remix-run/react"
 import { CheckIcon, ChevronsUpDownIcon, SaveIcon } from "lucide-react"
-import { useMemo } from "react"
-import { Box, Stack } from "styled-system/jsx"
+import { useMemo, useState } from "react"
+import { Box, Center, HStack, Stack } from "styled-system/jsx"
 import invariant from "tiny-invariant"
 import { z } from "zod"
 import { FormErrors } from "~/components/form-errors"
@@ -245,11 +245,19 @@ const DictionarySelect = (
   props: Omit<Select.RootProps, "items" | "children"> & { meta: FieldMetadata<number> }
 ) => {
   const control = useInputControl(props.meta)
+  const [icon, setIcon] = useState<string | null>(null)
   const { dictionaries } = useCreateProfileLoaderData()
-  const items = useMemo(() => {
+
+  type Item = {
+    label: string
+    value: number
+    icon: string
+  }
+  const items: Item[] = useMemo(() => {
     return dictionaries.map((dictionary) => ({
       label: dictionary.name,
-      value: dictionary.id
+      value: dictionary.id,
+      icon: dictionary.icon
     }))
   }, [dictionaries])
 
@@ -258,11 +266,21 @@ const DictionarySelect = (
       {...props}
       items={items}
       positioning={{ sameWidth: true }}
-      onValueChange={() => control.blur()}
+      onValueChange={(details) => {
+        control.blur()
+        setIcon((details.items.at(0) as Item)?.icon ?? null)
+      }}
     >
       <Select.Control>
         <Select.Trigger>
-          <Select.ValueText />
+          <HStack>
+            {icon && (
+              <Center w="5" h="5" rounded="md" overflow="hidden">
+                <img src={icon} alt="dictionary icon" />
+              </Center>
+            )}
+            <Select.ValueText />
+          </HStack>
           <ChevronsUpDownIcon />
         </Select.Trigger>
       </Select.Control>
@@ -271,7 +289,12 @@ const DictionarySelect = (
           <Select.Content>
             {items.map((item) => (
               <Select.Item key={item.value} item={item}>
-                <Select.ItemText>{item.label}</Select.ItemText>
+                <HStack>
+                  <Center w="5" h="5" rounded="md" overflow="hidden">
+                    <img src={item.icon} alt={`icon for ${item.label}`} />
+                  </Center>
+                  <Select.ItemText>{item.label}</Select.ItemText>
+                </HStack>
                 <Select.ItemIndicator>
                   <CheckIcon />
                 </Select.ItemIndicator>

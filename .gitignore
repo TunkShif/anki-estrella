@@ -4,6 +4,9 @@ node_modules
 /build
 .env
 
+## Remix-PWA
+public/entry.worker.js
+
 ## Panda
 styled-system
 styled-system-studio
