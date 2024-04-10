@@ -51,7 +51,7 @@ export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
 
   await db.profiles.put(submission.value)
   toast.success({ title: "Created", description: "Profile created successfully." })
-  return redirect("/profiles")
+  return redirect("/workspace")
 }
 
 export const clientLoader = async () => {
@@ -284,6 +284,7 @@ const DictionarySelect = (
           <ChevronsUpDownIcon />
         </Select.Trigger>
       </Select.Control>
+
       <Portal>
         <Select.Positioner>
           <Select.Content>

@@ -1,16 +1,17 @@
 import "@fontsource-variable/figtree"
 import { ManifestLink } from "@remix-pwa/sw"
 import {
-  Link,
   Links,
   Meta,
   type MetaFunction,
+  NavLink,
   Outlet,
   Scripts,
   ScrollRestoration,
   useNavigation
 } from "@remix-run/react"
-import { BookAIcon, HomeIcon, LayersIcon, SettingsIcon } from "lucide-react"
+import { QueryClientProvider } from "@tanstack/react-query"
+import { BookAIcon, HomeIcon, SettingsIcon } from "lucide-react"
 import { css } from "styled-system/css"
 import { Box } from "styled-system/jsx"
 import { hstack } from "styled-system/patterns"
@@ -18,6 +19,7 @@ import { Spinner } from "~/components/spinner"
 import { Toaster } from "~/components/toaster"
 import { Tooltip } from "~/components/tooltip"
 import { IconButton } from "~/components/ui/icon-button"
+import { queryClient } from "~/libs/query"
 import styles from "~/style.css?url"
 
 export const links = () => {
@@ -57,19 +59,21 @@ export default function App() {
   const isNavigating = navigation.state !== "idle"
 
   return (
-    <Box py="6" mx="auto" maxW="lg">
-      <Header />
-      <main
-        className={css({
-          mt: "2",
-          _loading: { opacity: "0.6" }
-        })}
-        aria-busy={isNavigating || undefined}
-      >
-        <Outlet />
-      </main>
-      <Toaster />
-    </Box>
+    <QueryClientProvider client={queryClient}>
+      <Box py="6" mx="auto" maxW="lg">
+        <Header />
+        <main
+          className={css({
+            mt: "2",
+            _loading: { opacity: "0.6" }
+          })}
+          aria-busy={isNavigating || undefined}
+        >
+          <Outlet />
+        </main>
+        <Toaster />
+      </Box>
+    </QueryClientProvider>
   )
 }
 
@@ -85,36 +89,29 @@ const Header = () => {
         <li>
           <Tooltip content="Home">
             <IconButton variant="ghost" asChild>
-              <Link to="/workspace">
+              <NavLink to="/workspace">
                 <HomeIcon />
-              </Link>
+              </NavLink>
             </IconButton>
           </Tooltip>
         </li>
-        <li>
-          <Tooltip content="Profiles">
-            <IconButton variant="ghost" asChild>
-              <Link to="/profiles">
-                <LayersIcon />
-              </Link>
-            </IconButton>
-          </Tooltip>
-        </li>
+
         <li>
           <Tooltip content="Dictionaries">
             <IconButton variant="ghost" asChild>
-              <Link to="/dictionaries">
+              <NavLink to="/dictionaries">
                 <BookAIcon />
-              </Link>
+              </NavLink>
             </IconButton>
           </Tooltip>
         </li>
+
         <li>
           <Tooltip content="Settings">
             <IconButton variant="ghost" asChild>
-              <Link to="/settings">
+              <NavLink to="/settings">
                 <SettingsIcon />
-              </Link>
+              </NavLink>
             </IconButton>
           </Tooltip>
         </li>

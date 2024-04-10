@@ -10,16 +10,17 @@ import {
   useFetcher,
   useNavigate
 } from "@remix-run/react"
-import { SaveIcon } from "lucide-react"
+import { PlusIcon, SaveIcon } from "lucide-react"
 import { toInt } from "radash"
 import { useCallback, useEffect, useRef } from "react"
-import { Stack } from "styled-system/jsx"
+import { HStack, Stack } from "styled-system/jsx"
 import invariant from "tiny-invariant"
 import { FieldEditor, type FieldEditorAction } from "~/components/field-editor"
 import { toast } from "~/components/toaster"
 import { Button } from "~/components/ui/button"
 import * as Card from "~/components/ui/card"
 import { FormLabel } from "~/components/ui/form-label"
+import { IconButton } from "~/components/ui/icon-button"
 import * as Tabs from "~/components/ui/tabs"
 import { Text } from "~/components/ui/text"
 import { AddNoteParams, getClient } from "~/libs/anki-connect"
@@ -56,7 +57,6 @@ export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
   const searchParams = new URL(request.url).searchParams
 
   const profiles = await db.profiles.toArray()
-  const dictionaries = await db.dictionaries.toArray()
 
   const isEmpty = profiles.length === 0
   if (isEmpty) {
@@ -75,7 +75,12 @@ export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
   invariant(fieldsResult.kind === "Success" && fieldsResult.data)
   const fields = fieldsResult.data
 
-  return json({ profiles, profile, dictionaries, dictionary, fields })
+  const language = dictionary.language
+  const dictionaries = (await db.dictionaries.toArray()).filter(
+    (dictionary) => dictionary.language === language
+  )
+
+  return json({ profiles, profile, dictionaries, dictionary, language, fields })
 }
 
 export default function WorkspacePage() {
@@ -84,6 +89,7 @@ export default function WorkspacePage() {
     profile,
     dictionaries,
     dictionary,
+    language,
     fields: fieldNames
   } = useWorkspaceLoaderData()
 
@@ -116,25 +122,32 @@ export default function WorkspacePage() {
 
   return (
     <Stack>
-      <Tabs.Root
-        variant="enclosed"
-        size="sm"
-        value={profile.id.toString()}
-        onValueChange={({ value }) =>
-          navigate({ pathname: "/workspace", search: `?profile=${value}` })
-        }
-      >
-        <Tabs.List>
-          {profiles.map((profile) => (
-            <Tabs.Trigger key={profile.id} value={profile.id.toString()} asChild>
-              <Link to={{ pathname: "/workspace", search: `?profile=${profile.id}` }}>
-                {profile.name}
-              </Link>
-            </Tabs.Trigger>
-          ))}
-          <Tabs.Indicator />
-        </Tabs.List>
-      </Tabs.Root>
+      <HStack>
+        <Tabs.Root
+          variant="enclosed"
+          size="sm"
+          value={profile.id.toString()}
+          onValueChange={({ value }) =>
+            navigate({ pathname: "/workspace", search: `?profile=${value}` })
+          }
+        >
+          <Tabs.List>
+            {profiles.map((profile) => (
+              <Tabs.Trigger key={profile.id} value={profile.id.toString()} asChild>
+                <Link to={{ pathname: "/workspace", search: `?profile=${profile.id}` }}>
+                  {profile.name}
+                </Link>
+              </Tabs.Trigger>
+            ))}
+            <Tabs.Indicator />
+          </Tabs.List>
+        </Tabs.Root>
+        <IconButton size="sm" variant="outline" asChild>
+          <Link to="/profiles/create">
+            <PlusIcon />
+          </Link>
+        </IconButton>
+      </HStack>
 
       <Card.Root>
         <Card.Header>
@@ -155,12 +168,7 @@ export default function WorkspacePage() {
         </Card.Header>
 
         <Card.Body>
-          <fetcher.Form
-            ref={formRef}
-            action="/workspace?index"
-            method="post"
-            {...getFormProps(form)}
-          >
+          <fetcher.Form ref={formRef} method="post" {...getFormProps(form)}>
             <input {...getInputProps(fields.deckName, { type: "hidden" })} value={profile.deck} />
             <input {...getInputProps(fields.modelName, { type: "hidden" })} value={profile.model} />
             <Stack gap="4">
@@ -169,6 +177,7 @@ export default function WorkspacePage() {
                   <FormLabel htmlFor={cardFields[field].id}>{field}</FormLabel>
                   <FieldEditor
                     meta={cardFields[field]}
+                    language={language}
                     dictionary={dictionary}
                     dictionaries={dictionaries}
                     editorRef={(action) => editorsRef.current.push(action)}
