@@ -172,7 +172,7 @@ export default function WorkspacePage() {
             <input {...getInputProps(fields.deckName, { type: "hidden" })} value={profile.deck} />
             <input {...getInputProps(fields.modelName, { type: "hidden" })} value={profile.model} />
             <Stack gap="4">
-              {fieldNames.map((field) => (
+              {fieldNames.map((field, index) => (
                 <Stack key={`${profile}-${field}`} gap="1.5">
                   <FormLabel htmlFor={cardFields[field].id}>{field}</FormLabel>
                   <FieldEditor
@@ -180,7 +180,9 @@ export default function WorkspacePage() {
                     language={language}
                     dictionary={dictionary}
                     dictionaries={dictionaries}
-                    editorRef={(action) => editorsRef.current.push(action)}
+                    editorRef={(action) => {
+                      editorsRef.current[index] = action
+                    }}
                   />
                 </Stack>
               ))}
