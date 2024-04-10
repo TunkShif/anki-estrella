@@ -14,23 +14,40 @@ import {
 } from "lucide-react"
 import { capitalize, diff, template } from "radash"
 import { type Ref, useCallback, useImperativeHandle, useRef } from "react"
-import { Box, Center, HStack } from "styled-system/jsx"
+import { Box, HStack } from "styled-system/jsx"
 import { textarea } from "styled-system/recipes"
 import invariant from "tiny-invariant"
+import { DictionaryIcon } from "~/components/dictionary/dictionary-icon"
 import { Tooltip } from "~/components/tooltip"
 import { IconButton } from "~/components/ui/icon-button"
 import * as Menu from "~/components/ui/menu"
 import * as ToggleGroup from "~/components/ui/toggle-group"
 import type { Dictionary } from "~/libs/database"
 
-const extensions = [StarterKit, Underline, Highlight]
+const extensions = [
+  StarterKit,
+  Underline,
+  Highlight.extend({
+    addAttributes() {
+      return {
+        "data-word": {
+          default: null
+        },
+        "data-language": {
+          default: null
+        }
+      }
+    }
+  })
+]
 
 export type FieldEditorAction = {
   reset: () => void
 }
 
-export type FieldEditorProps = {
+export interface FieldEditorProps {
   meta: FieldMetadata<string>
+  language: string
   dictionary: Dictionary
   dictionaries: Dictionary[]
   editorRef?: Ref<FieldEditorAction>
@@ -39,6 +56,7 @@ export type FieldEditorProps = {
 export const FieldEditor = ({
   editorRef: ref,
   meta,
+  language,
   dictionary,
   dictionaries
 }: FieldEditorProps) => {
@@ -65,7 +83,11 @@ export const FieldEditor = ({
         <BubbleMenu tippyOptions={{ zIndex: 1500, appendTo: () => document.body }}>
           <HStack gap="0" p="1" bg="bg.default" rounded="xl" borderWidth="1" divideX="1">
             <FormattingTools />
-            <DictionaryTools dictionary={dictionary} dictionaries={dictionaries} />
+            <DictionaryTools
+              language={language}
+              dictionary={dictionary}
+              dictionaries={dictionaries}
+            />
           </HStack>
         </BubbleMenu>
       </EditorProvider>
@@ -145,56 +167,48 @@ const FormattingTools = () => {
   )
 }
 
-const getSelectedText = (editor: Editor) =>
-  editor.state.selection.empty
+const handleSearch = (editor: Editor, dictionaryUrl: string, language: string) => {
+  const selectedText = editor.state.selection.empty
     ? null
     : editor.state.doc.textBetween(editor.state.selection.from, editor.state.selection.to)
-
-const searchInDictionary = (dictionaryUrl: string, query: string) => {
-  const url = template(dictionaryUrl, { query })
+  if (!selectedText) return
+  const url = template(dictionaryUrl, { query: selectedText })
   window.open(url, "_blank", "width=600,height=800")
+  editor.chain().focus().setMark("highlight", { "data-word": "", "data-language": language }).run()
 }
 
 const DictionaryTools = ({
+  language,
   dictionary,
   dictionaries
-}: { dictionary: Dictionary; dictionaries: Dictionary[] }) => {
+}: { language: string; dictionary: Dictionary; dictionaries: Dictionary[] }) => {
   const { editor } = useCurrentEditor()
   invariant(editor)
-
-  const handleSearch = useCallback(() => {
-    const selectedText = getSelectedText(editor)
-    if (!selectedText) return
-    searchInDictionary(dictionary.url, selectedText)
-    editor.chain().focus().setHighlight().run()
-  }, [dictionary.url, editor])
 
   return (
     <HStack pl="2">
       <Tooltip content={`Search word in ${dictionary.name}`} closeDelay={0}>
-        <IconButton type="button" size="sm" variant="ghost" onClick={handleSearch}>
+        <IconButton
+          type="button"
+          size="sm"
+          variant="ghost"
+          onClick={() => handleSearch(editor, dictionary.url, language)}
+        >
           <SearchIcon />
         </IconButton>
       </Tooltip>
 
-      <DictionaryMenu dictionaries={dictionaries} />
+      <DictionaryMenu language={language} dictionaries={dictionaries} />
     </HStack>
   )
 }
 
-const DictionaryMenu = ({ dictionaries }: { dictionaries: Dictionary[] }) => {
+const DictionaryMenu = ({
+  language,
+  dictionaries
+}: { language: string; dictionaries: Dictionary[] }) => {
   const { editor } = useCurrentEditor()
   invariant(editor)
-
-  const handleSearch = useCallback(
-    (dictionary: Dictionary) => {
-      const selectedText = getSelectedText(editor)
-      if (!selectedText) return
-      searchInDictionary(dictionary.url, selectedText)
-      editor.chain().focus().setHighlight().run()
-    },
-    [editor]
-  )
 
   return (
     <Menu.Root>
@@ -214,19 +228,10 @@ const DictionaryMenu = ({ dictionaries }: { dictionaries: Dictionary[] }) => {
               <Menu.Item
                 key={dictionary.id}
                 id={`dictionary-${dictionary.id}`}
-                onClick={() => handleSearch(dictionary)}
+                onClick={() => handleSearch(editor, dictionary.url, language)}
               >
                 <HStack>
-                  <Center
-                    w="5"
-                    h="5"
-                    rounded="md"
-                    borderWidth="1"
-                    borderColor="border.default"
-                    overflow="hidden"
-                  >
-                    <img src={dictionary.icon} alt={`icon for ${dictionary.name}`} />
-                  </Center>
+                  <DictionaryIcon src={dictionary.icon} name={dictionary.name} w="5" h="5" />
                   {dictionary.name}
                 </HStack>
               </Menu.Item>

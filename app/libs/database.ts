@@ -1,14 +1,15 @@
 import Dexie, { type Table } from "dexie"
-import { DEFAULT_DICTIONARIES } from "~/libs/dictionary"
+import DEFAULT_DICTIONARIES from "~/data/dictionaries.json"
 
-export type Dictionary = {
+export interface Dictionary {
   id: number
   name: string
   url: string
   icon: string
+  language: string
 }
 
-export type Profile = {
+export interface Profile {
   id: number
   name: string
   deck: string
@@ -16,15 +17,13 @@ export type Profile = {
   dictionaryId: number
 }
 
-type Input<T> = Omit<T, "id">
-
 export class Database extends Dexie {
-  dictionaries!: Table<Dictionary, number, Input<Dictionary>>
-  profiles!: Table<Profile, number, Input<Profile>>
+  profiles!: Table<Profile, number, Omit<Profile, "id">>
+  dictionaries!: Table<Dictionary, number, Omit<Dictionary, "id">>
 
   constructor() {
     super("anki")
-    this.version(3).stores({
+    this.version(4).stores({
       dictionaries: "++id",
       profiles: "++id, dictionaryId"
     })
