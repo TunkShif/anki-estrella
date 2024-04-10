@@ -9,11 +9,13 @@ import {
   EllipsisIcon,
   HighlighterIcon,
   ItalicIcon,
+  LockIcon,
+  LockOpenIcon,
   SearchIcon,
   UnderlineIcon
 } from "lucide-react"
 import { capitalize, diff, template } from "radash"
-import { type Ref, useCallback, useImperativeHandle, useRef } from "react"
+import { type Ref, useCallback, useImperativeHandle, useRef, useState } from "react"
 import { Box, HStack } from "styled-system/jsx"
 import { textarea } from "styled-system/recipes"
 import invariant from "tiny-invariant"
@@ -63,17 +65,31 @@ export const FieldEditor = ({
   const editorRef = useRef<Editor | null>(null)
   const control = useInputControl(meta)
 
+  const [locked, setLocked] = useState(false)
+
   useImperativeHandle(ref, () => ({
-    reset: () => editorRef.current?.commands.clearContent()
+    reset: () => {
+      if (!editorRef.current) return
+      if (locked) {
+        editorRef.current.commands.unsetAllMarks()
+        control.change(editorRef.current.getHTML())
+        control.blur()
+      } else {
+        editorRef.current.commands.clearContent()
+      }
+    }
   }))
 
   return (
-    <Box>
+    <Box className="group" position="relative">
       <EditorProvider
         extensions={extensions}
         editorProps={{ attributes: { class: textarea() } }}
         onCreate={({ editor }) => {
           editorRef.current = editor as Editor
+        }}
+        onDestroy={() => {
+          editorRef.current = null
         }}
         onBlur={({ editor }) => {
           control.change(editor.getHTML())
@@ -91,6 +107,26 @@ export const FieldEditor = ({
           </HStack>
         </BubbleMenu>
       </EditorProvider>
+
+      <Box
+        data-active={locked || undefined}
+        position="absolute"
+        bottom="1"
+        right="1"
+        transition="opacity {durations.fast} ease-in-out"
+        opacity="0"
+        _active={{ opacity: "1" }}
+        _groupHover={{ opacity: "1" }}
+      >
+        <IconButton
+          type="button"
+          size="xs"
+          variant="ghost"
+          onClick={() => setLocked((locked) => !locked)}
+        >
+          {locked ? <LockIcon /> : <LockOpenIcon />}
+        </IconButton>
+      </Box>
     </Box>
   )
 }
