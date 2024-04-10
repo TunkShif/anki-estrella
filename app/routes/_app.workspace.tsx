@@ -79,7 +79,13 @@ export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
 }
 
 export default function WorkspacePage() {
-  const { profiles, profile, fields: fieldNames } = useWorkspaceLoaderData()
+  const {
+    profiles,
+    profile,
+    dictionaries,
+    dictionary,
+    fields: fieldNames
+  } = useWorkspaceLoaderData()
 
   const fetcher = useFetcher<typeof clientAction>()
   const lastResult = useActionData<typeof clientAction>()
@@ -163,6 +169,8 @@ export default function WorkspacePage() {
                   <FormLabel htmlFor={cardFields[field].id}>{field}</FormLabel>
                   <FieldEditor
                     meta={cardFields[field]}
+                    dictionary={dictionary}
+                    dictionaries={dictionaries}
                     editorRef={(action) => editorsRef.current.push(action)}
                   />
                 </Stack>
