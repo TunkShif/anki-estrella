@@ -40,8 +40,9 @@ export default function DictionariesPage() {
               className={css({ py: "2", _first: { pt: "0" }, _last: { pb: "0" } })}
             >
               <HStack justifyContent="space-between">
-                <HStack>
+                <HStack maxW="4/5">
                   <Center
+                    flexShrink={0}
                     w="6"
                     h="6"
                     rounded="md"
@@ -49,23 +50,18 @@ export default function DictionariesPage() {
                     borderColor="border.subtle"
                     overflow="hidden"
                   >
-                    <img
-                      src={`https://www.google.com/s2/favicons?domain=${
-                        new URL(dictionary.url).host
-                      }&sz=32`}
-                      alt={`logo for ${dictionary.name}`}
-                    />
+                    <img src={dictionary.icon} alt={`logo for ${dictionary.name}`} />
                   </Center>
 
-                  <Stack gap="0">
+                  <Stack gap="0.5" overflowX="auto">
                     <Text fontWeight="medium">{dictionary.name}</Text>
-                    <Text size="xs" color="fg.subtle">
+                    <Text truncate size="xs" color="fg.subtle">
                       {dictionary.url}
                     </Text>
                   </Stack>
                 </HStack>
 
-                <Button size="sm" variant="ghost" asChild>
+                <Button flexShrink={0} size="sm" variant="ghost" asChild>
                   <Link to={`/dictionaries/${dictionary.id}/edit`}>
                     <EditIcon />
                     Edit
